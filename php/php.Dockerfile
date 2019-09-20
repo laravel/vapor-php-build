@@ -409,17 +409,14 @@ RUN /opt/bin/php -i | grep curl
 
 # Copy Everything To The Base Container
 
-FROM amazonlinux:2018.03
+FROM lambci/lambda:provided
 
 ENV INSTALL_DIR="/opt/vapor"
 
 ENV PATH="/opt/bin:${PATH}" \
     LD_LIBRARY_PATH="${INSTALL_DIR}/lib64:${INSTALL_DIR}/lib"
 
-RUN mkdir -p /opt
-
-WORKDIR /opt
+WORKDIR /var/task
 
 COPY --from=php_builder /opt /opt
-
-RUN LD_LIBRARY_PATH= yum -y install zip
+COPY --from=php_builder /usr/bin/zip /usr/bin/zip

@@ -12,5 +12,6 @@ distribution: build
 		--volume ${PWD}/runtime:/runtime:ro \
 		--volume ${PWD}/../export:/export \
 		--volume ${PWD}/export.sh:/export.sh:ro \
+		--user root \
+		--entrypoint /export.sh \
 		vapor/runtime/php-73:latest \
-		/export.sh
