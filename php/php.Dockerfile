@@ -241,27 +241,27 @@ RUN set -xe; \
 
 # Build Postgres (https://github.com/postgres/postgres/releases/)
 
-ARG postgres
-ENV VERSION_POSTGRES=${postgres}
-ENV POSTGRES_BUILD_DIR=${BUILD_DIR}/postgres
+# ARG postgres
+# ENV VERSION_POSTGRES=${postgres}
+# ENV POSTGRES_BUILD_DIR=${BUILD_DIR}/postgres
 
-RUN set -xe; \
-    mkdir -p ${POSTGRES_BUILD_DIR}/bin; \
-    curl -Ls https://github.com/postgres/postgres/archive/REL${VERSION_POSTGRES//./_}.tar.gz \
-    | tar xzC ${POSTGRES_BUILD_DIR} --strip-components=1
+# RUN set -xe; \
+#     mkdir -p ${POSTGRES_BUILD_DIR}/bin; \
+#     curl -Ls https://github.com/postgres/postgres/archive/REL${VERSION_POSTGRES//./_}.tar.gz \
+#     | tar xzC ${POSTGRES_BUILD_DIR} --strip-components=1
 
-WORKDIR  ${POSTGRES_BUILD_DIR}/
+# WORKDIR  ${POSTGRES_BUILD_DIR}/
 
-RUN set -xe; \
-    CFLAGS="" \
-    CPPFLAGS="-I${INSTALL_DIR}/include  -I/usr/include" \
-    LDFLAGS="-L${INSTALL_DIR}/lib64 -L${INSTALL_DIR}/lib" \
-    ./configure --prefix=${INSTALL_DIR} --with-openssl --without-readline
+# RUN set -xe; \
+#     CFLAGS="" \
+#     CPPFLAGS="-I${INSTALL_DIR}/include  -I/usr/include" \
+#     LDFLAGS="-L${INSTALL_DIR}/lib64 -L${INSTALL_DIR}/lib" \
+#     ./configure --prefix=${INSTALL_DIR} --with-openssl --without-readline
 
-RUN set -xe; cd ${POSTGRES_BUILD_DIR}/src/interfaces/libpq && make && make install
-RUN set -xe; cd ${POSTGRES_BUILD_DIR}/src/bin/pg_config && make && make install
-RUN set -xe; cd ${POSTGRES_BUILD_DIR}/src/backend && make generated-headers
-RUN set -xe; cd ${POSTGRES_BUILD_DIR}/src/include && make install
+# RUN set -xe; cd ${POSTGRES_BUILD_DIR}/src/interfaces/libpq && make && make install
+# RUN set -xe; cd ${POSTGRES_BUILD_DIR}/src/bin/pg_config && make && make install
+# RUN set -xe; cd ${POSTGRES_BUILD_DIR}/src/backend && make generated-headers
+# RUN set -xe; cd ${POSTGRES_BUILD_DIR}/src/include && make install
 
 # Build libjpeg
 
@@ -365,7 +365,7 @@ RUN set -xe \
         --with-pdo-mysql=shared,mysqlnd \
         --enable-pcntl \
         --enable-zip \
-        --with-pdo-pgsql=shared,${INSTALL_DIR} \
+        # --with-pdo-pgsql=shared,${INSTALL_DIR} \
         --enable-intl=shared \
         --enable-opcache-file
 
