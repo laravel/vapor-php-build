@@ -22,3 +22,9 @@ RUN  set -xe \
     && ./bootstrap --prefix=/usr/local \
     && make \
     && make install
+
+RUN curl "https://s3.amazonaws.com/aws-cli/awscli-bundle.zip" -o "awscli-bundle.zip"
+
+RUN unzip awscli-bundle.zip
+
+RUN awscli-bundle/install -i /opt/awscli -b /opt/awscli/aws
