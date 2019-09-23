@@ -28,3 +28,5 @@ RUN curl "https://s3.amazonaws.com/aws-cli/awscli-bundle.zip" -o "awscli-bundle.
 RUN unzip awscli-bundle.zip
 
 RUN awscli-bundle/install -i /opt/awscli -b /opt/awscli/aws
+
+RUN rm -rf /opt/awscli/pip* /opt/awscli/setuptools* /opt/awscli/awscli/examples
