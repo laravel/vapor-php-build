@@ -407,6 +407,20 @@ RUN cp /opt/vapor/lib64/* /opt/lib || true
 RUN ls /opt/bin
 RUN /opt/bin/php -i | grep curl
 
+
+FROM amazonlinux:latest as awsclibuilder
+
+WORKDIR /root
+
+RUN curl "https://s3.amazonaws.com/aws-cli/awscli-bundle.zip" -o "awscli-bundle.zip"
+
+RUN yum update -y && yum install -y unzip
+
+RUN unzip awscli-bundle.zip && cd awscli-bundle;
+
+RUN ./awscli-bundle/install -i /opt/awscli -b /opt/awscli/aws
+
+
 # Copy Everything To The Base Container
 
 FROM amazonlinux:2018.03
@@ -421,5 +435,10 @@ RUN mkdir -p /opt
 WORKDIR /opt
 
 COPY --from=php_builder /opt /opt
+COPY --from=awsclibuilder /opt/awscli/lib/python2.7/site-packages/ /opt/awscli/
+COPY --from=awsclibuilder /opt/awscli/bin/ /opt/awscli/bin/
+COPY --from=awsclibuilder /opt/awscli/bin/aws /opt/awscli/aws
 
 RUN LD_LIBRARY_PATH= yum -y install zip
+
+RUN rm -rf /opt/awscli/pip* /opt/awscli/setuptools* /opt/awscli/awscli/examples
