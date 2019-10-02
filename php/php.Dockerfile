@@ -239,6 +239,22 @@ RUN set -xe; \
 RUN set -xe; \
     make install
 
+# Build Argon2 (https://github.com/P-H-C/phc-winner-argon2/releases)
+
+ARG argon2
+ENV VERSION_ARGON2=${argon2}
+ENV ARGON2_BUILD_DIR=${BUILD_DIR}/argon2
+
+RUN set -xe; \
+    mkdir -p ${ARGON2_BUILD_DIR}; \
+    curl -Ls https://github.com/P-H-C/phc-winner-argon2/archive/${VERSION_ARGON2}.tar.gz \
+    | tar xzC ${ARGON2_BUILD_DIR} --strip-components=1
+
+WORKDIR  ${ARGON2_BUILD_DIR}/
+
+RUN set -xe; \
+    make install PREFIX=${INSTALL_DIR}
+
 # Build Postgres (https://github.com/postgres/postgres/releases/)
 
 # ARG postgres
@@ -351,6 +367,7 @@ RUN set -xe \
         --disable-phpdbg \
         --disable-phpdbg-webhelper \
         --with-sodium \
+        --with-password-argon2=${INSTALL_DIR} \
         --with-readline \
         --with-openssl \
         --with-zlib=${INSTALL_DIR} \
