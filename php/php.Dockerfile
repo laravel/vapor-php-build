@@ -7,7 +7,7 @@ ENV INSTALL_DIR="/opt/vapor"
 
 # Configure Default Compiler Variables
 
-ENV PKG_CONFIG_PATH="${INSTALL_DIR}/lib64/pkgconfig:${INSTALL_DIR}/lib/pkgconfig" \
+ENV PKG_CONFIG_PATH="${INSTALL_DIR}/lib64/pkgconfig:${INSTALL_DIR}/lib/pkgconfig:/usr/local/lib64/pkgconfig:/usr/local/lib/pkgconfig" \
     PKG_CONFIG="/usr/bin/pkg-config" \
     PATH="${INSTALL_DIR}/bin:${PATH}"
 
@@ -313,6 +313,29 @@ RUN set -xe; \
 RUN set -xe; \
     make install
 
+# Build Oniguruma
+
+ENV LIBONIG_BUILD_DIR=${BUILD_DIR}/libonig
+
+RUN  set -xe \
+    && mkdir -p ${LIBONIG_BUILD_DIR}/bin \
+    && curl -Ls https://github.com/kkos/oniguruma/releases/download/v6.9.3/onig-6.9.3.tar.gz \
+    | tar xzC ${LIBONIG_BUILD_DIR} --strip-components=1
+
+WORKDIR  ${LIBONIG_BUILD_DIR}/
+
+RUN set -xe; \
+    CFLAGS="" \
+    CPPFLAGS="-I${INSTALL_DIR}/include  -I/usr/include" \
+    LDFLAGS="-L${INSTALL_DIR}/lib64 -L${INSTALL_DIR}/lib" \
+    && ./configure \
+        --prefix=${INSTALL_DIR} \
+        --enable-shared \
+        --disable-static
+
+RUN set -xe; \
+    make install
+
 # Build PHP
 
 ARG php
@@ -321,14 +344,14 @@ ENV PHP_BUILD_DIR=${BUILD_DIR}/php
 
 RUN set -xe; \
     mkdir -p ${PHP_BUILD_DIR}; \
-    curl -Ls https://github.com/php/php-src/archive/php-${VERSION_PHP}.tar.gz \
+    curl -Ls https://downloads.php.net/~derick/php-${VERSION_PHP}.tar.gz \
     | tar xzC ${PHP_BUILD_DIR} --strip-components=1
 
 # Configure The PHP Build
 
 WORKDIR  ${PHP_BUILD_DIR}/
 
-RUN LD_LIBRARY_PATH= yum install -y readline-devel gettext-devel libicu-devel
+RUN LD_LIBRARY_PATH= yum install -y readline-devel gettext-devel libicu-devel sqlite-devel
 
 RUN set -xe \
  && ./buildconf --force \
@@ -345,29 +368,27 @@ RUN set -xe \
         --enable-fpm \
         --disable-cgi \
         --enable-cli \
-        --with-png-dir=${INSTALL_DIR} \
-        --with-jpeg-dir=${INSTALL_DIR} \
-        --with-gd \
+        --with-jpeg=${INSTALL_DIR} \
+        --enable-gd \
         --disable-phpdbg \
         --disable-phpdbg-webhelper \
         --with-sodium \
         --with-readline \
         --with-openssl \
         --with-zlib=${INSTALL_DIR} \
-        --with-zlib-dir=${INSTALL_DIR} \
-        --with-curl=${INSTALL_DIR} \
+        --with-curl \
         --enable-bcmath \
         --enable-exif \
         --enable-ftp \
         --with-gettext \
+        --with-pear \
         --enable-mbstring \
         --enable-soap \
         --with-pdo-mysql=shared,mysqlnd \
         --enable-pcntl \
-        --enable-zip \
+        --with-zip \
         --with-pdo-pgsql=shared,${INSTALL_DIR} \
-        --enable-intl=shared \
-        --enable-opcache-file
+        --enable-intl=shared
 
 RUN make -j $(nproc)
 
@@ -396,7 +417,7 @@ RUN mkdir -p /opt/lib/curl
 
 RUN cp /opt/vapor/bin/* /opt/bin
 RUN cp /opt/vapor/sbin/* /opt/bin
-RUN cp /opt/vapor/lib/php/extensions/no-debug-zts-20180731/* /opt/bin
+RUN cp /opt/vapor/lib/php/extensions/no-debug-zts-20190902/* /opt/bin
 
 RUN cp /opt/vapor/lib/* /opt/lib || true
 RUN cp /opt/vapor/lib/libcurl* /opt/lib/curl || true
