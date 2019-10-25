@@ -9,6 +9,7 @@ $dotenv = Dotenv\Dotenv::create(__DIR__);
 $dotenv->load();
 
 $layers = [
+    'php-73' => 'Laravel Vapor PHP 7.3',
     'php-74' => 'Laravel Vapor PHP 7.4',
 ];
 
@@ -41,7 +42,9 @@ foreach (array_keys($regions) as $region) {
         'version' => 'latest',
     ]);
 
-    foreach ($layers as $layer => $description) {
+    $layersToPublish = isset($argv[1]) ? [$argv[1] => $layers[$argv[1]]] : $layers;
+
+    foreach ($layersToPublish as $layer => $description) {
         $publishResponse = $lambda->publishLayerVersion([
             'LayerName' => 'vapor-php-74',
             'Description' => $description,
