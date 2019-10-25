@@ -312,6 +312,20 @@ RUN set -xe; \
 
 RUN set -xe; \
     make install
+    
+###############################################################################
+
+# XSL Build
+# https://www.php.net/manual/en/book.xsl.php
+# Needs:
+#   - libxslt
+# Needed by:
+#   - php
+
+# Install libxslt first
+RUN LD_LIBRARY_PATH= yum install -y libxslt-devel
+
+###############################################################################       
 
 # Build PHP
 
@@ -347,6 +361,7 @@ RUN set -xe \
         --enable-cli \
         --with-png-dir=${INSTALL_DIR} \
         --with-jpeg-dir=${INSTALL_DIR} \
+        --with-xsl=${INSTALL_DIR} \
         --with-gd \
         --disable-phpdbg \
         --disable-phpdbg-webhelper \
