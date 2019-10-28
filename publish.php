@@ -46,7 +46,7 @@ foreach (array_keys($regions) as $region) {
 
     foreach ($layersToPublish as $layer => $description) {
         $publishResponse = $lambda->publishLayerVersion([
-            'LayerName' => 'vapor-php-74',
+            'LayerName' => 'vapor-'.$layer,
             'Description' => $description,
             'Content' => [
                 'ZipFile' => file_get_contents(__DIR__."/export/{$layer}.zip"),
@@ -55,7 +55,7 @@ foreach (array_keys($regions) as $region) {
 
         $lambda->addLayerVersionPermission([
             'Action' => 'lambda:GetLayerVersion',
-            'LayerName' => 'vapor-php-74',
+            'LayerName' => 'vapor-'.$layer,
             'Principal' => '*',
             'StatementId' => (string) time(),
             'VersionNumber' => (string) $publishResponse['Version'],
