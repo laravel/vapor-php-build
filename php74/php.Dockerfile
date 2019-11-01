@@ -351,7 +351,7 @@ RUN set -xe; \
 
 WORKDIR  ${PHP_BUILD_DIR}/
 
-RUN LD_LIBRARY_PATH= yum install -y readline-devel gettext-devel libicu-devel sqlite-devel
+RUN LD_LIBRARY_PATH= yum install -y readline-devel gettext-devel libicu-devel sqlite-devel libxslt-devel
 
 RUN set -xe \
  && ./buildconf --force \
@@ -369,6 +369,7 @@ RUN set -xe \
         --disable-cgi \
         --enable-cli \
         --with-jpeg=${INSTALL_DIR} \
+        --with-xsl=${INSTALL_DIR} \
         --enable-gd \
         --disable-phpdbg \
         --disable-phpdbg-webhelper \
