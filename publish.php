@@ -1,12 +1,12 @@
 <?php
 
 use Aws\Lambda\LambdaClient;
+use Dotenv\Dotenv;
 use Symfony\Component\Process\Process;
 
 require_once __DIR__ . '/vendor/autoload.php';
 
-$dotenv = Dotenv\Dotenv::create(__DIR__);
-$dotenv->load();
+Dotenv::createImmutable(__DIR__)->safeLoad();
 
 $layers = [
     'php-73' => 'Laravel Vapor PHP 7.3',
