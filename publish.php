@@ -14,7 +14,7 @@ $layers = [
 ];
 
 $regions = [
-    'us-east-1' => 'US East (N. Virginia) (us-east-1)',
+    // 'us-east-1' => 'US East (N. Virginia) (us-east-1)',
     'us-east-2' => 'US East (Ohio) (us-east-2)',
     'us-west-1' => 'US West (N. California) (us-west-1)',
     'us-west-2' => 'US West (Oregon) (us-west-2)',
@@ -37,14 +37,14 @@ $regions = [
 ];
 
 foreach (array_keys($regions) as $region) {
-    $lambda = new LambdaClient([
-        'region' => $region,
-        'version' => 'latest',
-    ]);
-
     $layersToPublish = isset($argv[1]) ? [$argv[1] => $layers[$argv[1]]] : $layers;
 
     foreach ($layersToPublish as $layer => $description) {
+        $lambda = new LambdaClient([
+            'region' => $region,
+            'version' => 'latest',
+        ]);
+
         $publishResponse = $lambda->publishLayerVersion([
             'LayerName' => 'vapor-'.$layer,
             'Description' => $description,
