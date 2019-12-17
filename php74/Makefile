@@ -4,7 +4,7 @@ compiler: compiler.Dockerfile
 	docker build -f ${PWD}/compiler.Dockerfile -t vapor/runtime/compiler:latest .
 
 build: compiler
-	docker build --no-cache -f ${PWD}/php.Dockerfile -t vapor/runtime/php-74:latest $(shell helpers/buildArguments.php php74) .
+	docker build -f ${PWD}/php.Dockerfile -t vapor/runtime/php-74:latest $(shell helpers/buildArguments.php php74) .
 
 distribution: build
 	docker run --rm \
