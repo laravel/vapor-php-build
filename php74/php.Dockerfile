@@ -402,7 +402,7 @@ RUN set -xe; \
     cp php.ini-production ${INSTALL_DIR}/etc/php/php.ini
 
 # RUN pecl install redis
-RUN pecl install -f redis-4.3.0
+RUN pecl install -f redis
 
 # RUN pecl install imagick
 RUN pecl install imagick
