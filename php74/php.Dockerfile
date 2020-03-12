@@ -379,6 +379,7 @@ RUN set -xe \
         --with-zlib=${INSTALL_DIR} \
         --with-curl \
         --enable-bcmath \
+        --enable-sockets \
         --enable-exif \
         --enable-ftp \
         --with-gettext \
