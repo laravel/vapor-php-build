@@ -111,6 +111,27 @@ RUN set -xe; \
 
 RUN set -xe; \
     cmake  --build . --target install
+    
+# Build nghttp2 (https://github.com/nghttp2/nghttp2/releases/)
+
+ARG nghttp2
+ENV VERSION_NGHTTP2=${nghttp2}
+ENV NGHTTP2_BUILD_DIR=${BUILD_DIR}/nghttp2
+
+RUN set -xe; \
+    mkdir -p ${NGHTTP2_BUILD_DIR}/bin; \
+    curl -Ls https://github.com/nghttp2/nghttp2/releases/download/v${VERSION_NGHTTP2}/nghttp2-${VERSION_NGHTTP2}.tar.gz \
+    | tar xzC ${NGHTTP2_BUILD_DIR} --strip-components=1
+    
+WORKDIR  ${NGHTTP2_BUILD_DIR}/
+
+RUN set -xe; \
+    autoreconf -i && \
+    automake && \
+    autoconf && \
+    ./configure && \
+    make && \
+    make install
 
 # Build Curl (https://github.com/curl/curl/releases/)
 
@@ -151,7 +172,8 @@ RUN set -xe; \
             --enable-cookies \
             --with-gnu-ld \
             --with-ssl \
-            --with-libssh2
+            --with-libssh2 \
+            --with-nghttp2=/usr/local
 
 RUN set -xe; \
     make install
