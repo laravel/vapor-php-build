@@ -25,6 +25,7 @@ $regions = [
     'ap-southeast-1' => 'Asia Pacific (Singapore) (ap-southeast-1)',
     'ap-southeast-2' => 'Asia Pacific (Sydney) (ap-southeast-2)',
     'ap-northeast-1' => 'Asia Pacific (Tokyo) (ap-northeast-1)',
+    'af-south-1' => 'Africa (Cape Town) (af-south-1)',
     'ca-central-1' => 'Canada (Central) (ca-central-1)',
     // 'cn-north-1' => 'China (Beijing) (cn-north-1)',
     // 'cn-northwest-1' => 'China (Ningxia) (cn-northwest-1)',
@@ -33,6 +34,7 @@ $regions = [
     'eu-west-2' => 'EU (London) (eu-west-2)',
     'eu-west-3' => 'EU (Paris) (eu-west-3)',
     'eu-north-1' => 'EU (Stockholm) (eu-north-1)',
+    'me-south-1' => 'Middle East (Bahrain) (me-south-1)',
     'sa-east-1' => 'South America (São Paulo) (sa-east-1)',
 ];
 
