@@ -111,7 +111,7 @@ RUN set -xe; \
 
 RUN set -xe; \
     cmake  --build . --target install
-    
+
 # Build nghttp2 (https://github.com/nghttp2/nghttp2/releases/)
 
 ARG nghttp2
@@ -122,7 +122,7 @@ RUN set -xe; \
     mkdir -p ${NGHTTP2_BUILD_DIR}/bin; \
     curl -Ls https://github.com/nghttp2/nghttp2/releases/download/v${VERSION_NGHTTP2}/nghttp2-${VERSION_NGHTTP2}.tar.gz \
     | tar xzC ${NGHTTP2_BUILD_DIR} --strip-components=1
-    
+
 WORKDIR  ${NGHTTP2_BUILD_DIR}/
 
 RUN set -xe; \
@@ -454,6 +454,7 @@ RUN cp /opt/vapor/lib64/* /opt/lib || true
 RUN ls /opt/bin
 RUN /opt/bin/php -i | grep curl
 
+# Install AWS CLI
 
 FROM amazonlinux:latest as awsclibuilder
 
