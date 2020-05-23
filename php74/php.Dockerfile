@@ -428,7 +428,7 @@ RUN set -xe; \
 RUN pecl install -f redis
 
 # RUN pecl install imagick
-RUN pecl install imagick
+# RUN pecl install imagick
 
 # Strip All Unneeded Symbols
 

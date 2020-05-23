@@ -16,8 +16,9 @@ rm -rf vapor/
 
 mkdir -p vapor/etc/php/conf.d
 cp /runtime/php.ini vapor/etc/php/conf.d/vapor.ini
-cp /runtime/imagick/bin/* bin
-cp /runtime/imagick/lib/* lib
+
+# cp /runtime/imagick/bin/* bin
+# cp /runtime/imagick/lib/* lib
 
 ls -la
 
