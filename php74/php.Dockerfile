@@ -373,7 +373,7 @@ RUN set -xe; \
 
 WORKDIR  ${PHP_BUILD_DIR}/
 
-RUN LD_LIBRARY_PATH= yum install -y readline-devel gettext-devel libicu-devel sqlite-devel libxslt-devel ImageMagick-devel
+RUN LD_LIBRARY_PATH= yum install -y readline-devel gettext-devel libicu-devel sqlite-devel libxslt-devel
 
 RUN set -xe \
  && ./buildconf --force \
@@ -427,9 +427,6 @@ RUN set -xe; \
 # RUN pecl install redis
 RUN pecl install -f redis
 
-# RUN pecl install imagick
-RUN pecl install imagick
-
 # Strip All Unneeded Symbols
 
 RUN find ${INSTALL_DIR} -type f -name "*.so*" -o -name "*.a"  -exec strip --strip-unneeded {} \;
@@ -476,7 +473,7 @@ FROM amazonlinux:2018.03
 ENV INSTALL_DIR="/opt/vapor"
 
 ENV PATH="/opt/bin:${PATH}" \
-    LD_LIBRARY_PATH="${INSTALL_DIR}/lib64:${INSTALL_DIR}/lib"
+    LD_LIBRARY_PATH="${INSTALL_DIR}/lib64:${INSTALL_DIR}/lib:bref:/opt/bref/lib:/opt/bref/lib64"
 
 RUN mkdir -p /opt
 
