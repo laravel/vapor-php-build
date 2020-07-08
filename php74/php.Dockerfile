@@ -434,7 +434,7 @@ RUN pecl install -f redis
 
 ARG mongodb
 ENV VERSION_MONGODB=${mongodb}
-RUN if [ -z ${VERSION_MONGODB} ]; then \
+RUN if [[ ! -z "${VERSION_MONGODB}" ]]; then \
     pecl install -f mongodb-${VERSION_MONGODB} \
     ;fi
 
