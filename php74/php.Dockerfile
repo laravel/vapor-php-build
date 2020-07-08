@@ -430,6 +430,14 @@ RUN pecl install -f redis-5.3.1
 # RUN pecl install imagick
 # RUN pecl install imagick
 
+# Install MongoDB
+
+ARG mongodb
+ENV VERSION_MONGODB=${mongodb}
+RUN if [ -z ${VERSION_MONGODB} ]; then \
+    pecl install -f mongodb-${VERSION_MONGODB} \
+    ;fi
+
 # Strip All Unneeded Symbols
 
 RUN find ${INSTALL_DIR} -type f -name "*.so*" -o -name "*.a"  -exec strip --strip-unneeded {} \;
