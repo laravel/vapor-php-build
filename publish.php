@@ -10,7 +10,7 @@ Dotenv::createImmutable(__DIR__)->safeLoad();
 
 $layers = [
     'php-73' => 'Laravel Vapor PHP 7.3',
-    'php-74' => 'Laravel Vapor PHP 7.4',
+    // 'php-74' => 'Laravel Vapor PHP 7.4',
 ];
 
 $regions = [
