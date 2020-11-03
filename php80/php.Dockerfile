@@ -364,9 +364,10 @@ ARG php
 ENV VERSION_PHP=${php}
 ENV PHP_BUILD_DIR=${BUILD_DIR}/php
 
+# TODO 1: download from https://github.com/php/php-src/archive
 RUN set -xe; \
     mkdir -p ${PHP_BUILD_DIR}; \
-    curl -Ls https://php.net/distributions/php-${VERSION_PHP}.tar.gz \
+    curl -Ls https://downloads.php.net/~pollita//php-${VERSION_PHP}.tar.gz \
     | tar xzC ${PHP_BUILD_DIR} --strip-components=1
 
 # Configure The PHP Build
@@ -384,7 +385,6 @@ RUN set -xe \
         --build=x86_64-pc-linux-gnu \
         --prefix=${INSTALL_DIR} \
         --enable-option-checking=fatal \
-        --enable-maintainer-zts \
         --with-config-file-path=${INSTALL_DIR}/etc/php \
         --with-config-file-scan-dir=${INSTALL_DIR}/etc/php/conf.d:/var/task/php/conf.d \
         --enable-fpm \
@@ -425,18 +425,11 @@ RUN set -xe; \
     cp php.ini-production ${INSTALL_DIR}/etc/php/php.ini
 
 # RUN pecl install redis
-RUN pecl install -f redis-5.3.1
+# TODO 2: Modify to stable release
+RUN pecl install -f redis-5.3.2RC2
 
 # RUN pecl install imagick
 # RUN pecl install imagick
-
-# Install MongoDB
-
-ARG mongodb
-ENV VERSION_MONGODB=${mongodb}
-RUN if [[ ! -z "${VERSION_MONGODB}" ]]; then \
-    pecl install -f mongodb-${VERSION_MONGODB} \
-    ;fi
 
 # Strip All Unneeded Symbols
 
@@ -451,7 +444,7 @@ RUN mkdir -p /opt/lib/curl
 
 RUN cp /opt/vapor/bin/* /opt/bin
 RUN cp /opt/vapor/sbin/* /opt/bin
-RUN cp /opt/vapor/lib/php/extensions/no-debug-zts-20190902/* /opt/bin
+RUN cp /opt/vapor/lib/php/extensions/no-debug-non-zts-20200930/* /opt/bin
 
 RUN cp /opt/vapor/lib/* /opt/lib || true
 RUN cp /opt/vapor/lib/libcurl* /opt/lib/curl || true
