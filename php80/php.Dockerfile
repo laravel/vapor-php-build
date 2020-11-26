@@ -364,10 +364,9 @@ ARG php
 ENV VERSION_PHP=${php}
 ENV PHP_BUILD_DIR=${BUILD_DIR}/php
 
-# TODO 1: download from https://github.com/php/php-src/archive
 RUN set -xe; \
     mkdir -p ${PHP_BUILD_DIR}; \
-    curl -Ls https://downloads.php.net/~pollita//php-${VERSION_PHP}.tar.gz \
+    curl -Ls https://php.net/distributions/php-${VERSION_PHP}.tar.gz \
     | tar xzC ${PHP_BUILD_DIR} --strip-components=1
 
 # Configure The PHP Build
@@ -425,10 +424,9 @@ RUN set -xe; \
     cp php.ini-production ${INSTALL_DIR}/etc/php/php.ini
 
 # RUN pecl install redis
-# TODO 2: Modify to stable release
-RUN pecl install -f redis-5.3.2RC2
+RUN pecl install -f redis-5.3.2
 
-# RUN pecl install imagick
+# RUN pecl install imagick ( Uncomment the line below for adding the "Imagick" extension )
 # RUN pecl install imagick
 
 # Strip All Unneeded Symbols
