@@ -9,8 +9,9 @@ require_once __DIR__ . '/vendor/autoload.php';
 Dotenv::createImmutable(__DIR__)->safeLoad();
 
 $layers = [
-    // 'php-73' => 'Laravel Vapor PHP 7.3',
-    'php-74' => 'Imagick For PHP 7.4',
+    // 'php-73' => 'Imagick For PHP 7.3',
+    // 'php-74' => 'Imagick For PHP 7.4',
+    'php-80' => 'Imagick For PHP 8.0',
 ];
 
 $regions = [
@@ -34,6 +35,7 @@ $regions = [
     'eu-west-2' => 'EU (London) (eu-west-2)',
     'eu-west-3' => 'EU (Paris) (eu-west-3)',
     'eu-north-1' => 'EU (Stockholm) (eu-north-1)',
+    'eu-south-1' => 'EU (Milan) (eu-south-1)',
     'me-south-1' => 'Middle East (Bahrain) (me-south-1)',
     'sa-east-1' => 'South America (São Paulo) (sa-east-1)',
 ];
