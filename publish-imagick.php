@@ -9,9 +9,8 @@ require_once __DIR__ . '/vendor/autoload.php';
 Dotenv::createImmutable(__DIR__)->safeLoad();
 
 $layers = [
-    // 'php-73' => 'Imagick For PHP 7.3',
-    // 'php-74' => 'Imagick For PHP 7.4',
-    'php-80' => 'Imagick For PHP 8.0',
+    // For other versions, please use the "docker" runtime.
+    'php-74' => 'Imagick For PHP 7.4 and Amazon Linux 1',
 ];
 
 $regions = [
