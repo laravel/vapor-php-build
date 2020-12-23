@@ -373,8 +373,9 @@ RUN set -xe; \
 
 WORKDIR  ${PHP_BUILD_DIR}/
 
-RUN LD_LIBRARY_PATH= yum install -y readline-devel gettext-devel libicu-devel sqlite-devel libxslt-devel ImageMagick-devel
+RUN LD_LIBRARY_PATH= yum install -y readline-devel gettext-devel libicu-devel sqlite-devel libxslt-devel ImageMagick-devel unzip
 
+RUN cp -a /usr/bin/unzip ${INSTALL_DIR}/bin/unzip
 RUN cp -a /usr/lib64/libgpg-error.so* ${INSTALL_DIR}/lib64/
 RUN cp -a /usr/lib64/libtinfo.so* ${INSTALL_DIR}/lib64/
 RUN cp -a /usr/lib64/libgcrypt.so* ${INSTALL_DIR}/lib64/
@@ -437,7 +438,7 @@ RUN set -xe; \
 # RUN pecl install redis
 RUN pecl install -f redis-5.3.1
 
-# RUN pecl install imagick
+# RUN pecl install imagick ( Uncomment the line below for adding the "Imagick" extension )
 # RUN pecl install imagick
 
 # Strip All Unneeded Symbols
@@ -445,7 +446,7 @@ RUN pecl install -f redis-5.3.1
 RUN find ${INSTALL_DIR} -type f -name "*.so*" -o -name "*.a"  -exec strip --strip-unneeded {} \;
 RUN find ${INSTALL_DIR} -type f -executable -exec sh -c "file -i '{}' | grep -q 'x-executable; charset=binary'" \; -print|xargs strip --strip-all
 
-# Symlink All Binaries / Libaries
+# Symlink All Binaries / Libraries
 
 RUN mkdir -p /opt/bin
 RUN mkdir -p /opt/lib
@@ -463,40 +464,3 @@ RUN cp /opt/vapor/lib64/* /opt/lib || true
 
 RUN ls /opt/bin
 RUN /opt/bin/php -i | grep curl
-
-# Install AWS CLI
-
-FROM amazonlinux:latest as awsclibuilder
-
-WORKDIR /root
-
-RUN curl "https://s3.amazonaws.com/aws-cli/awscli-bundle.zip" -o "awscli-bundle.zip"
-
-RUN yum update -y && yum install -y unzip
-
-RUN unzip awscli-bundle.zip && cd awscli-bundle;
-
-RUN ./awscli-bundle/install -i /opt/awscli -b /opt/awscli/aws
-
-
-# Copy Everything To The Base Container
-
-FROM amazonlinux:2
-
-ENV INSTALL_DIR="/opt/vapor"
-
-ENV PATH="/opt/bin:${PATH}" \
-    LD_LIBRARY_PATH="${INSTALL_DIR}/lib64:${INSTALL_DIR}/lib"
-
-RUN mkdir -p /opt
-
-WORKDIR /opt
-
-COPY --from=php_builder /opt /opt
-COPY --from=awsclibuilder /opt/awscli/lib/python2.7/site-packages/ /opt/awscli/
-COPY --from=awsclibuilder /opt/awscli/bin/ /opt/awscli/bin/
-COPY --from=awsclibuilder /opt/awscli/bin/aws /opt/awscli/aws
-
-RUN LD_LIBRARY_PATH= yum -y install zip
-
-RUN rm -rf /opt/awscli/pip* /opt/awscli/setuptools* /opt/awscli/awscli/examples
