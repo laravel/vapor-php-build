@@ -59,7 +59,7 @@ RUN set -xe; \
 ARG openssl
 ENV VERSION_OPENSSL=${openssl}
 ENV OPENSSL_BUILD_DIR=${BUILD_DIR}/openssl
-ENV CA_BUNDLE_SOURCE="https://curl.haxx.se/ca/cacert.pem"
+ENV CA_BUNDLE_SOURCE="https://curl.se/ca/cacert.pem"
 ENV CA_BUNDLE="${INSTALL_DIR}/ssl/cert.pem"
 
 RUN set -xe; \
@@ -83,7 +83,7 @@ RUN set -xe; \
 
 RUN set -xe; \
     make install \
-    && curl -k -o ${CA_BUNDLE} ${CA_BUNDLE_SOURCE}
+    && curl -L -k -o ${CA_BUNDLE} ${CA_BUNDLE_SOURCE}
 
 # Build LibSSH2 (https://github.com/libssh2/libssh2/releases/)
 
