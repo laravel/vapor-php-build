@@ -375,6 +375,16 @@ WORKDIR  ${PHP_BUILD_DIR}/
 
 RUN LD_LIBRARY_PATH= yum install -y readline-devel gettext-devel libicu-devel sqlite-devel libxslt-devel ImageMagick-devel
 
+RUN cp -a /usr/lib64/libgpg-error.so* ${INSTALL_DIR}/lib64/
+RUN cp -a /usr/lib64/libtinfo.so* ${INSTALL_DIR}/lib64/
+RUN cp -a /usr/lib64/libgcrypt.so* ${INSTALL_DIR}/lib64/
+RUN cp -a /usr/lib64/libreadline.so?* ${INSTALL_DIR}/lib64/
+RUN cp -a /usr/lib64/libasprintf.so* ${INSTALL_DIR}/lib64/
+RUN cp -a /usr/lib64/libgettextpo.so* ${INSTALL_DIR}/lib64/
+RUN cp -a /usr/lib64/preloadable_libintl.so* ${INSTALL_DIR}/lib64/
+RUN cp -a /usr/lib64/lib*xslt*.so* ${INSTALL_DIR}/lib64/
+RUN cp -a /usr/lib64/libsqlite3*.so* ${INSTALL_DIR}/lib64/
+
 RUN set -xe \
  && ./buildconf --force \
  && CFLAGS="-fstack-protector-strong -fpic -fpie -Os -I${INSTALL_DIR}/include -I/usr/include -ffunction-sections -fdata-sections" \
@@ -430,14 +440,6 @@ RUN pecl install -f redis-5.3.1
 # RUN pecl install imagick
 # RUN pecl install imagick
 
-# Install MongoDB
-
-ARG mongodb
-ENV VERSION_MONGODB=${mongodb}
-RUN if [[ ! -z "${VERSION_MONGODB}" ]]; then \
-    pecl install -f mongodb-${VERSION_MONGODB} \
-    ;fi
-
 # Strip All Unneeded Symbols
 
 RUN find ${INSTALL_DIR} -type f -name "*.so*" -o -name "*.a"  -exec strip --strip-unneeded {} \;
@@ -462,24 +464,9 @@ RUN cp /opt/vapor/lib64/* /opt/lib || true
 RUN ls /opt/bin
 RUN /opt/bin/php -i | grep curl
 
-# Install AWS CLI
-
-FROM amazonlinux:latest as awsclibuilder
-
-WORKDIR /root
-
-RUN curl "https://s3.amazonaws.com/aws-cli/awscli-bundle.zip" -o "awscli-bundle.zip"
-
-RUN yum update -y && yum install -y unzip
-
-RUN unzip awscli-bundle.zip && cd awscli-bundle;
-
-RUN ./awscli-bundle/install -i /opt/awscli -b /opt/awscli/aws
-
-
 # Copy Everything To The Base Container
 
-FROM amazonlinux:2018.03
+FROM amazonlinux:2
 
 ENV INSTALL_DIR="/opt/vapor"
 
@@ -491,10 +478,4 @@ RUN mkdir -p /opt
 WORKDIR /opt
 
 COPY --from=php_builder /opt /opt
-COPY --from=awsclibuilder /opt/awscli/lib/python2.7/site-packages/ /opt/awscli/
-COPY --from=awsclibuilder /opt/awscli/bin/ /opt/awscli/bin/
-COPY --from=awsclibuilder /opt/awscli/bin/aws /opt/awscli/aws
-
 RUN LD_LIBRARY_PATH= yum -y install zip
-
-RUN rm -rf /opt/awscli/pip* /opt/awscli/setuptools* /opt/awscli/awscli/examples

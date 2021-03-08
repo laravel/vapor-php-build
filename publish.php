@@ -9,9 +9,14 @@ require_once __DIR__ . '/vendor/autoload.php';
 Dotenv::createImmutable(__DIR__)->safeLoad();
 
 $layers = [
-    // 'php-73' => 'Laravel Vapor PHP 7.3',
-    'php-74' => 'Laravel Vapor PHP 7.4',
-    // 'php-80' => 'Laravel Vapor PHP 8.0',
+    // Amazon Linux 1:
+    // 'php-73' => 'Laravel Vapor PHP 7.3 for Amazon Linux 1',
+    // 'php-74' => 'Laravel Vapor PHP 7.4 for Amazon Linux 1',
+    // 'php-80' => 'Laravel Vapor PHP 8.0 for Amazon Linux 1',
+
+    // Amazon Linux 2:
+    // 'php-74al2' => 'Laravel Vapor PHP 7.4 for Amazon Linux 2',
+    'php-80al2' => 'Laravel Vapor PHP 8.0 for Amazon Linux 2',
 ];
 
 $regions = [
@@ -35,6 +40,7 @@ $regions = [
     // 'eu-west-2' => 'EU (London) (eu-west-2)',
     // 'eu-west-3' => 'EU (Paris) (eu-west-3)',
     // 'eu-north-1' => 'EU (Stockholm) (eu-north-1)',
+    // 'eu-south-1' => 'EU (Milan) (eu-south-1)',
     // 'me-south-1' => 'Middle East (Bahrain) (me-south-1)',
     // 'sa-east-1' => 'South America (São Paulo) (sa-east-1)',
 ];
