@@ -15,7 +15,7 @@ $layers = [
     // 'php-80' => 'Laravel Vapor PHP 8.0 for Amazon Linux 1',
 
     // Amazon Linux 2:
-    // 'php-74al2' => 'Laravel Vapor PHP 7.4 for Amazon Linux 2',
+    'php-74al2' => 'Laravel Vapor PHP 7.4 for Amazon Linux 2',
     'php-80al2' => 'Laravel Vapor PHP 8.0 for Amazon Linux 2',
 ];
 
