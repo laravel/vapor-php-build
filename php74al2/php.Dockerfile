@@ -220,7 +220,7 @@ ENV ZIP_BUILD_DIR=${BUILD_DIR}/zip
 RUN set -xe; \
     mkdir -p ${ZIP_BUILD_DIR}/bin/; \
 # Download and upack the source code
-    curl -Ls https://github.com/nih-at/libzip/archive/rel-${VERSION_ZIP//./-}.tar.gz \
+    curl -Ls https://github.com/nih-at/libzip/releases/download/v${VERSION_ZIP}/libzip-${VERSION_ZIP}.tar.gz \
   | tar xzC ${ZIP_BUILD_DIR} --strip-components=1
 
 # Move into the unpackaged code directory
@@ -341,7 +341,7 @@ ENV LIBONIG_BUILD_DIR=${BUILD_DIR}/libonig
 
 RUN  set -xe \
     && mkdir -p ${LIBONIG_BUILD_DIR}/bin \
-    && curl -Ls https://github.com/kkos/oniguruma/releases/download/v6.9.3/onig-6.9.3.tar.gz \
+    && curl -Ls https://github.com/kkos/oniguruma/releases/download/v6.9.6/onig-6.9.6.tar.gz \
     | tar xzC ${LIBONIG_BUILD_DIR} --strip-components=1
 
 WORKDIR  ${LIBONIG_BUILD_DIR}/
@@ -435,10 +435,7 @@ RUN set -xe; \
     cp php.ini-production ${INSTALL_DIR}/etc/php/php.ini
 
 # RUN pecl install redis
-RUN pecl install -f redis-5.3.1
-
-# RUN pecl install imagick
-# RUN pecl install imagick
+RUN pecl install -f redis-5.3.4
 
 # Strip All Unneeded Symbols
 
