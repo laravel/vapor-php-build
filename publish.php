@@ -17,6 +17,7 @@ $layers = [
     // Amazon Linux 2:
     'php-74al2' => 'Laravel Vapor PHP 7.4 for Amazon Linux 2',
     'php-80al2' => 'Laravel Vapor PHP 8.0 for Amazon Linux 2',
+    'php-81al2' => 'Laravel Vapor PHP 8.1 for Amazon Linux 2',
 ];
 
 $regions = [
