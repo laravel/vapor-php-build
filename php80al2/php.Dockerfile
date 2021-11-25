@@ -1,4 +1,4 @@
-FROM vapor/runtime/compiler:latest as php_builder
+FROM --platform=linux/amd64 vapor/runtime/compiler:latest as php_builder
 
 SHELL ["/bin/bash", "-c"]
 

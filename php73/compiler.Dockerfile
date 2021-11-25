@@ -1,4 +1,4 @@
-FROM amazonlinux:2018.03
+FROM --platform=linux/amd64 amazonlinux:2018.03
 
 WORKDIR /tmp
 
