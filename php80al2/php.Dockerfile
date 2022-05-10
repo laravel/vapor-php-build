@@ -163,7 +163,6 @@ RUN set -xe; \
             --enable-http \
             --enable-ftp  \
             --enable-file \
-            --enable-ldap \
             --enable-ldaps  \
             --enable-proxy  \
             --enable-tftp \
@@ -433,8 +432,12 @@ RUN set -xe; \
     make clean; \
     cp php.ini-production ${INSTALL_DIR}/etc/php/php.ini
 
-# RUN pecl install redis
-RUN pecl install -f redis-5.3.4
+# Build Redis (https://pecl.php.net/package/redis/)
+
+ARG redis
+ENV VERSION_REDIS=${redis}
+
+RUN pecl install -f redis-${VERSION_REDIS}
 
 # Strip All Unneeded Symbols
 
