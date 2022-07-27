@@ -268,7 +268,7 @@ ENV POSTGRES_BUILD_DIR=${BUILD_DIR}/postgres
 
 RUN set -xe; \
     mkdir -p ${POSTGRES_BUILD_DIR}/bin; \
-    curl -Ls https://github.com/postgres/postgres/archive/REL${VERSION_POSTGRES//./_}.tar.gz \
+    curl -Ls https://github.com/postgres/postgres/archive/REL_${VERSION_POSTGRES//./_}.tar.gz \
     | tar xzC ${POSTGRES_BUILD_DIR} --strip-components=1
 
 WORKDIR  ${POSTGRES_BUILD_DIR}/
