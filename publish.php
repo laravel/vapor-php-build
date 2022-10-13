@@ -2,9 +2,8 @@
 
 use Aws\Lambda\LambdaClient;
 use Dotenv\Dotenv;
-use Symfony\Component\Process\Process;
 
-require_once __DIR__ . '/vendor/autoload.php';
+require_once __DIR__.'/vendor/autoload.php';
 
 Dotenv::createImmutable(__DIR__)->safeLoad();
 
@@ -18,6 +17,7 @@ $layers = [
     'php-74al2' => 'Laravel Vapor PHP 7.4 for Amazon Linux 2',
     'php-80al2' => 'Laravel Vapor PHP 8.0 for Amazon Linux 2',
     'php-81al2' => 'Laravel Vapor PHP 8.1 for Amazon Linux 2',
+    'php-82al2' => 'Laravel Vapor PHP 8.2 for Amazon Linux 2',
 ];
 
 $regions = [
