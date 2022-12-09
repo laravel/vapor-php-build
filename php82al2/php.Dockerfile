@@ -365,7 +365,7 @@ ENV PHP_BUILD_DIR=${BUILD_DIR}/php
 
 RUN set -xe; \
     mkdir -p ${PHP_BUILD_DIR}; \
-    curl -Ls https://downloads.php.net/~pierrick/php-${VERSION_PHP}.tar.gz \
+    curl -Ls https://php.net/distributions/php-${VERSION_PHP}.tar.gz \
     | tar xzC ${PHP_BUILD_DIR} --strip-components=1
 
 # Configure The PHP Build
