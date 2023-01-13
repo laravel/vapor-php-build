@@ -14,7 +14,7 @@ $layers = [
     // 'php-80' => 'Laravel Vapor PHP 8.0 for Amazon Linux 1',
 
     // Amazon Linux 2:
-    'php-74al2' => 'Laravel Vapor PHP 7.4 for Amazon Linux 2',
+    // 'php-74al2' => 'Laravel Vapor PHP 7.4 for Amazon Linux 2',
     'php-80al2' => 'Laravel Vapor PHP 8.0 for Amazon Linux 2',
     'php-81al2' => 'Laravel Vapor PHP 8.1 for Amazon Linux 2',
     'php-82al2' => 'Laravel Vapor PHP 8.2 for Amazon Linux 2',
@@ -31,6 +31,7 @@ $regions = [
     'ap-northeast-2' => 'Asia Pacific (Seoul) (ap-northeast-2)',
     'ap-southeast-1' => 'Asia Pacific (Singapore) (ap-southeast-1)',
     'ap-southeast-2' => 'Asia Pacific (Sydney) (ap-southeast-2)',
+    'ap-southeast-3' => 'Asia Pacific (Jakarta) (ap-southeast-3)',
     'ap-northeast-1' => 'Asia Pacific (Tokyo) (ap-northeast-1)',
     'af-south-1' => 'Africa (Cape Town) (af-south-1)',
     'ca-central-1' => 'Canada (Central) (ca-central-1)',
