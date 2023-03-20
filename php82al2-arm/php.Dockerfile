@@ -389,7 +389,6 @@ RUN set -xe \
     CPPFLAGS="-fstack-protector-strong -fpic -fpie -Os -I${INSTALL_DIR}/include -I/usr/include -ffunction-sections -fdata-sections" \
     LDFLAGS="-L${INSTALL_DIR}/lib64 -L${INSTALL_DIR}/lib -Wl,-O1 -Wl,--strip-all -Wl,--hash-style=both -pie" \
     ./configure \
-    --build=x86_64-pc-linux-gnu \
     --prefix=${INSTALL_DIR} \
     --enable-option-checking=fatal \
     --with-config-file-path=${INSTALL_DIR}/etc/php \
@@ -464,7 +463,7 @@ RUN /opt/bin/php -i | grep curl
 
 # Copy Everything To The Base Container
 
-FROM amazonlinux:2
+FROM --platform=linux/arm64 amazonlinux:2
 
 ENV INSTALL_DIR="/opt/vapor"
 
