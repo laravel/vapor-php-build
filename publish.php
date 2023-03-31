@@ -18,6 +18,7 @@ $layers = [
     'php-80al2' => 'Laravel Vapor PHP 8.0 for Amazon Linux 2',
     'php-81al2' => 'Laravel Vapor PHP 8.1 for Amazon Linux 2',
     'php-82al2' => 'Laravel Vapor PHP 8.2 for Amazon Linux 2',
+    'php-82al2-arm' => 'Laravel Vapor PHP 8.2 for Amazon Linux 2 ARM',
 ];
 
 $regions = [
