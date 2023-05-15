@@ -14,7 +14,7 @@ RUN set -xe \
 
 # Install CMake
 
-RUN yum -y install openssl-devel
+RUN yum -y install openssl-devel perl-IPC-Cmd
 
 RUN  set -xe \
     && mkdir -p /tmp/cmake \
