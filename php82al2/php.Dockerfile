@@ -64,7 +64,7 @@ ENV CA_BUNDLE="${INSTALL_DIR}/ssl/cert.pem"
 
 RUN set -xe; \
     mkdir -p ${OPENSSL_BUILD_DIR}; \
-    curl -Ls  https://github.com/openssl/openssl/archive/OpenSSL_${VERSION_OPENSSL//./_}.tar.gz \
+    curl -Ls  https://github.com/openssl/openssl/archive/openssl-${VERSION_OPENSSL}.tar.gz \
     | tar xzC ${OPENSSL_BUILD_DIR} --strip-components=1
 
 WORKDIR  ${OPENSSL_BUILD_DIR}/
