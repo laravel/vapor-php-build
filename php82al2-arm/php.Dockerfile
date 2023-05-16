@@ -184,7 +184,7 @@ ENV XML2_BUILD_DIR=${BUILD_DIR}/xml2
 
 RUN set -xe; \
     mkdir -p ${XML2_BUILD_DIR}; \
-    curl -Ls https://gitlab.gnome.org/GNOME/libxml2/-/archive/v${VERSION_XML2}/libxml2-v${VERSION_XML2}.tar.gz
+    curl -Ls https://gitlab.gnome.org/GNOME/libxml2/-/archive/v${VERSION_XML2}/libxml2-v${VERSION_XML2}.tar.gz \
     | tar xzC ${XML2_BUILD_DIR} --strip-components=1
 
 WORKDIR  ${XML2_BUILD_DIR}/
