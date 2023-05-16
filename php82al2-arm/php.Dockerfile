@@ -185,7 +185,7 @@ ENV XML2_BUILD_DIR=${BUILD_DIR}/xml2
 RUN set -xe; \
     mkdir -p ${XML2_BUILD_DIR}; \
     curl -Ls https://download.gnome.org/sources/libxml2/2.11/libxml2-${VERSION_XML2}.tar.xz \
-    | tar xC ${XML2_BUILD_DIR} --strip-components=1
+    | tar xf ${XML2_BUILD_DIR} --strip-components=1
 
 WORKDIR  ${XML2_BUILD_DIR}/
 
