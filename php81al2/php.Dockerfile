@@ -64,7 +64,7 @@ ENV CA_BUNDLE="${INSTALL_DIR}/ssl/cert.pem"
 
 RUN set -xe; \
     mkdir -p ${OPENSSL_BUILD_DIR}; \
-    curl -Ls  https://github.com/openssl/openssl/archive/OpenSSL_${VERSION_OPENSSL//./_}.tar.gz \
+    curl -Ls  https://github.com/openssl/openssl/archive/openssl-${VERSION_OPENSSL}.tar.gz \
     | tar xzC ${OPENSSL_BUILD_DIR} --strip-components=1
 
 WORKDIR  ${OPENSSL_BUILD_DIR}/
@@ -177,7 +177,7 @@ RUN set -xe; \
 RUN set -xe; \
     make install
 
-# Build LibXML2 (https://github.com/GNOME/libxml2/releases)
+# Build LibXML2 (https://gitlab.gnome.org/GNOME/libxml2/-/releases)
 
 ARG libxml2
 ENV VERSION_XML2=${libxml2}
@@ -185,8 +185,8 @@ ENV XML2_BUILD_DIR=${BUILD_DIR}/xml2
 
 RUN set -xe; \
     mkdir -p ${XML2_BUILD_DIR}; \
-    curl -Ls http://xmlsoft.org/sources/libxml2-${VERSION_XML2}.tar.gz \
-    | tar xzC ${XML2_BUILD_DIR} --strip-components=1
+    curl -Ls https://download.gnome.org/sources/libxml2/2.11/libxml2-${VERSION_XML2}.tar.xz \
+    | tar xJC ${XML2_BUILD_DIR} --strip-components=1
 
 WORKDIR  ${XML2_BUILD_DIR}/
 
