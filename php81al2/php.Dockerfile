@@ -85,6 +85,39 @@ RUN set -xe; \
     make install \
     && curl -L -k -o ${CA_BUNDLE} ${CA_BUNDLE_SOURCE}
 
+# Build LibXML2 (https://gitlab.gnome.org/GNOME/libxml2/-/releases)
+
+ARG libxml2
+ENV VERSION_XML2=${libxml2}
+ENV XML2_BUILD_DIR=${BUILD_DIR}/xml2
+
+RUN set -xe; \
+    mkdir -p ${XML2_BUILD_DIR}; \
+    curl -Ls https://download.gnome.org/sources/libxml2/${VERSION_XML2%.*}/libxml2-${VERSION_XML2}.tar.xz \
+    | tar xJC ${XML2_BUILD_DIR} --strip-components=1
+
+WORKDIR  ${XML2_BUILD_DIR}/
+
+RUN set -xe; \
+    CFLAGS="" \
+    CPPFLAGS="-I${INSTALL_DIR}/include  -I/usr/include" \
+    LDFLAGS="-L${INSTALL_DIR}/lib64 -L${INSTALL_DIR}/lib" \
+    ./configure \
+        --prefix=${INSTALL_DIR} \
+        --with-sysroot=${INSTALL_DIR} \
+        --enable-shared \
+        --disable-static \
+        --with-html \
+        --with-history \
+        --enable-ipv6=no \
+        --with-icu \
+        --with-zlib=${INSTALL_DIR} \
+        --without-python
+
+RUN set -xe; \
+    make install \
+    && cp xml2-config ${INSTALL_DIR}/bin/xml2-config
+
 # Build LibSSH2 (https://github.com/libssh2/libssh2/releases/)
 
 ARG libssh2
@@ -176,39 +209,6 @@ RUN set -xe; \
 
 RUN set -xe; \
     make install
-
-# Build LibXML2 (https://gitlab.gnome.org/GNOME/libxml2/-/releases)
-
-ARG libxml2
-ENV VERSION_XML2=${libxml2}
-ENV XML2_BUILD_DIR=${BUILD_DIR}/xml2
-
-RUN set -xe; \
-    mkdir -p ${XML2_BUILD_DIR}; \
-    curl -Ls https://download.gnome.org/sources/libxml2/${VERSION_XML2%.*}/libxml2-${VERSION_XML2}.tar.xz \
-    | tar xJC ${XML2_BUILD_DIR} --strip-components=1
-
-WORKDIR  ${XML2_BUILD_DIR}/
-
-RUN set -xe; \
-    CFLAGS="" \
-    CPPFLAGS="-I${INSTALL_DIR}/include  -I/usr/include" \
-    LDFLAGS="-L${INSTALL_DIR}/lib64 -L${INSTALL_DIR}/lib" \
-    ./configure \
-        --prefix=${INSTALL_DIR} \
-        --with-sysroot=${INSTALL_DIR} \
-        --enable-shared \
-        --disable-static \
-        --with-html \
-        --with-history \
-        --enable-ipv6=no \
-        --with-icu \
-        --with-zlib=${INSTALL_DIR} \
-        --without-python
-
-RUN set -xe; \
-    make install \
-    && cp xml2-config ${INSTALL_DIR}/bin/xml2-config
 
 # Build Libzip (https://github.com/nih-at/libzip/releases)
 
