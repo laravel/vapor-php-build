@@ -336,11 +336,13 @@ RUN set -xe; \
 
 # Build Oniguruma
 
+ARG oniguruma
+ENV VERSION_ONIGURUMA=${oniguruma}
 ENV LIBONIG_BUILD_DIR=${BUILD_DIR}/libonig
 
 RUN  set -xe \
     && mkdir -p ${LIBONIG_BUILD_DIR}/bin \
-    && curl -Ls https://github.com/kkos/oniguruma/releases/download/v6.9.6/onig-6.9.6.tar.gz \
+    && curl -Ls https://github.com/kkos/oniguruma/releases/download/v${VERSION_ONIGURUMA}/onig-${VERSION_ONIGURUMA}.tar.gz \
     | tar xzC ${LIBONIG_BUILD_DIR} --strip-components=1
 
 WORKDIR  ${LIBONIG_BUILD_DIR}/
