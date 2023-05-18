@@ -76,6 +76,7 @@ RUN set -xe; \
     --prefix=${INSTALL_DIR} \
     --openssldir=${INSTALL_DIR}/ssl \
     --release \
+    enable-tls1_3 \
     no-tests \
     shared \
     zlib
