@@ -162,7 +162,7 @@ RUN set -xe; \
     automake && \
     autoconf && \
     ./configure --enable-lib-only --prefix=${INSTALL_DIR} && \
-    make && \
+    make -j $(nproc) && \
     make install
 
 # Build Curl (https://github.com/curl/curl/releases/)

@@ -22,5 +22,5 @@ RUN  set -xe \
     && curl -Ls  https://github.com/Kitware/CMake/releases/download/v3.20.0/cmake-3.20.0.tar.gz \
     | tar xzC /tmp/cmake --strip-components=1 \
     && ./bootstrap --prefix=/usr/local \
-    && make \
+    && make -j $(nproc) \
     && make install
