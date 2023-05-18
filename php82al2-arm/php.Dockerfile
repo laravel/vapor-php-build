@@ -161,7 +161,7 @@ RUN set -xe; \
     autoreconf -i && \
     automake && \
     autoconf && \
-    ./configure && \
+    ./configure --enable-lib-only --prefix=${INSTALL_DIR} && \
     make && \
     make install
 
@@ -204,7 +204,7 @@ RUN set -xe; \
     --with-gnu-ld \
     --with-ssl \
     --with-libssh2 \
-    --with-nghttp2=/usr/local
+    --with-nghttp2
 
 RUN set -xe; \
     make install
