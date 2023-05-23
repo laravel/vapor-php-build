@@ -5,7 +5,7 @@ use Dotenv\Dotenv;
 
 require_once __DIR__.'/vendor/autoload.php';
 
-Dotenv::createUnsafeImmutable(__DIR__)->safeLoad();
+Dotenv::createImmutable(__DIR__)->safeLoad();
 
 $layers = [
     // Amazon Linux 1:
@@ -55,6 +55,11 @@ foreach (array_keys($regions) as $region) {
         $lambda = new LambdaClient([
             'region' => $region,
             'version' => 'latest',
+            'credentials' => [
+                'key' => $_SERVER['AWS_ACCESS_KEY_ID'],
+                'secret' => $_SERVER['AWS_SECRET_ACCESS_KEY'],
+                'token' => $_SERVER['AWS_SESSION_TOKEN'] ?? null,
+            ],
         ]);
 
         $publishResponse = $lambda->publishLayerVersion([
