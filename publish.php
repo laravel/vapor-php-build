@@ -55,6 +55,11 @@ foreach (array_keys($regions) as $region) {
         $lambda = new LambdaClient([
             'region' => $region,
             'version' => 'latest',
+            'credentials' => [
+                'key' => $_SERVER['AWS_ACCESS_KEY_ID'],
+                'secret' => $_SERVER['AWS_SECRET_ACCESS_KEY'],
+                'token' => $_SERVER['AWS_SESSION_TOKEN'] ?? null,
+            ],
         ]);
 
         $publishResponse = $lambda->publishLayerVersion([

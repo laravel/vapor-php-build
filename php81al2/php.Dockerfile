@@ -64,7 +64,7 @@ ENV CA_BUNDLE="${INSTALL_DIR}/ssl/cert.pem"
 
 RUN set -xe; \
     mkdir -p ${OPENSSL_BUILD_DIR}; \
-    curl -Ls  https://github.com/openssl/openssl/archive/OpenSSL_${VERSION_OPENSSL//./_}.tar.gz \
+    curl -Ls  https://github.com/openssl/openssl/archive/openssl-${VERSION_OPENSSL}.tar.gz \
     | tar xzC ${OPENSSL_BUILD_DIR} --strip-components=1
 
 WORKDIR  ${OPENSSL_BUILD_DIR}/
@@ -77,6 +77,7 @@ RUN set -xe; \
         --prefix=${INSTALL_DIR} \
         --openssldir=${INSTALL_DIR}/ssl \
         --release \
+        enable-tls1_3 \
         no-tests \
         shared \
         zlib
@@ -84,6 +85,39 @@ RUN set -xe; \
 RUN set -xe; \
     make install \
     && curl -L -k -o ${CA_BUNDLE} ${CA_BUNDLE_SOURCE}
+
+# Build LibXML2 (https://gitlab.gnome.org/GNOME/libxml2/-/releases)
+
+ARG libxml2
+ENV VERSION_XML2=${libxml2}
+ENV XML2_BUILD_DIR=${BUILD_DIR}/xml2
+
+RUN set -xe; \
+    mkdir -p ${XML2_BUILD_DIR}; \
+    curl -Ls https://download.gnome.org/sources/libxml2/${VERSION_XML2%.*}/libxml2-${VERSION_XML2}.tar.xz \
+    | tar xJC ${XML2_BUILD_DIR} --strip-components=1
+
+WORKDIR  ${XML2_BUILD_DIR}/
+
+RUN set -xe; \
+    CFLAGS="" \
+    CPPFLAGS="-I${INSTALL_DIR}/include  -I/usr/include" \
+    LDFLAGS="-L${INSTALL_DIR}/lib64 -L${INSTALL_DIR}/lib" \
+    ./configure \
+        --prefix=${INSTALL_DIR} \
+        --with-sysroot=${INSTALL_DIR} \
+        --enable-shared \
+        --disable-static \
+        --with-html \
+        --with-history \
+        --enable-ipv6=no \
+        --with-icu \
+        --with-zlib=${INSTALL_DIR} \
+        --without-python
+
+RUN set -xe; \
+    make install \
+    && cp xml2-config ${INSTALL_DIR}/bin/xml2-config
 
 # Build LibSSH2 (https://github.com/libssh2/libssh2/releases/)
 
@@ -129,8 +163,8 @@ RUN set -xe; \
     autoreconf -i && \
     automake && \
     autoconf && \
-    ./configure && \
-    make && \
+    ./configure --enable-lib-only --prefix=${INSTALL_DIR} && \
+    make -j $(nproc) && \
     make install
 
 # Build Curl (https://github.com/curl/curl/releases/)
@@ -172,43 +206,10 @@ RUN set -xe; \
             --with-gnu-ld \
             --with-ssl \
             --with-libssh2 \
-            --with-nghttp2=/usr/local
+            --with-nghttp2
 
 RUN set -xe; \
     make install
-
-# Build LibXML2 (https://github.com/GNOME/libxml2/releases)
-
-ARG libxml2
-ENV VERSION_XML2=${libxml2}
-ENV XML2_BUILD_DIR=${BUILD_DIR}/xml2
-
-RUN set -xe; \
-    mkdir -p ${XML2_BUILD_DIR}; \
-    curl -Ls http://xmlsoft.org/sources/libxml2-${VERSION_XML2}.tar.gz \
-    | tar xzC ${XML2_BUILD_DIR} --strip-components=1
-
-WORKDIR  ${XML2_BUILD_DIR}/
-
-RUN set -xe; \
-    CFLAGS="" \
-    CPPFLAGS="-I${INSTALL_DIR}/include  -I/usr/include" \
-    LDFLAGS="-L${INSTALL_DIR}/lib64 -L${INSTALL_DIR}/lib" \
-    ./configure \
-        --prefix=${INSTALL_DIR} \
-        --with-sysroot=${INSTALL_DIR} \
-        --enable-shared \
-        --disable-static \
-        --with-html \
-        --with-history \
-        --enable-ipv6=no \
-        --with-icu \
-        --with-zlib=${INSTALL_DIR} \
-        --without-python
-
-RUN set -xe; \
-    make install \
-    && cp xml2-config ${INSTALL_DIR}/bin/xml2-config
 
 # Build Libzip (https://github.com/nih-at/libzip/releases)
 
@@ -336,11 +337,13 @@ RUN set -xe; \
 
 # Build Oniguruma
 
+ARG oniguruma
+ENV VERSION_ONIGURUMA=${oniguruma}
 ENV LIBONIG_BUILD_DIR=${BUILD_DIR}/libonig
 
 RUN  set -xe \
     && mkdir -p ${LIBONIG_BUILD_DIR}/bin \
-    && curl -Ls https://github.com/kkos/oniguruma/releases/download/v6.9.6/onig-6.9.6.tar.gz \
+    && curl -Ls https://github.com/kkos/oniguruma/releases/download/v${VERSION_ONIGURUMA}/onig-${VERSION_ONIGURUMA}.tar.gz \
     | tar xzC ${LIBONIG_BUILD_DIR} --strip-components=1
 
 WORKDIR  ${LIBONIG_BUILD_DIR}/
