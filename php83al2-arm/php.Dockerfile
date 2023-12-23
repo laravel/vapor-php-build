@@ -374,7 +374,7 @@ RUN set -xe; \
 
 WORKDIR  ${PHP_BUILD_DIR}/
 
-RUN LD_LIBRARY_PATH= yum install -y readline-devel gettext-devel libicu-devel sqlite-devel libxslt-devel ImageMagick-devel
+RUN LD_LIBRARY_PATH= yum install -y readline-devel gettext-devel libicu-devel sqlite-devel libxslt-devel ImageMagick-devel libzstd libzstd-devel
 
 RUN cp -a /usr/lib64/libgpg-error.so* ${INSTALL_DIR}/lib64/
 RUN cp -a /usr/lib64/libtinfo.so* ${INSTALL_DIR}/lib64/
@@ -385,6 +385,7 @@ RUN cp -a /usr/lib64/libgettextpo.so* ${INSTALL_DIR}/lib64/
 RUN cp -a /usr/lib64/preloadable_libintl.so* ${INSTALL_DIR}/lib64/
 RUN cp -a /usr/lib64/lib*xslt*.so* ${INSTALL_DIR}/lib64/
 RUN cp -a /usr/lib64/libsqlite3*.so* ${INSTALL_DIR}/lib64/
+RUN cp -a /usr/lib64/libzstd.so* ${INSTALL_DIR}/lib64/
 
 RUN set -xe \
     && ./buildconf --force \
@@ -438,7 +439,7 @@ RUN set -xe; \
 ARG redis
 ENV VERSION_REDIS=${redis}
 
-RUN pecl install -f redis-${VERSION_REDIS}
+RUN pecl install -f --configureoptions 'enable-redis-zstd="yes"' redis-${VERSION_REDIS}
 
 # Strip All Unneeded Symbols
 
