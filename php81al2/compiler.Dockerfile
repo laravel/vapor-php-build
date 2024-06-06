@@ -4,7 +4,7 @@ WORKDIR /tmp
 
 # Lock To Proper Release
 
-RUN sed -i 's/releasever=latest/releaserver=amzn2/' /etc/yum.conf
+RUN sed -i 's/releasever=latest/releasever=amzn2/' /etc/yum.conf
 
 # Install Development Tools
 
