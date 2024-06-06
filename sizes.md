@@ -4,5 +4,5 @@
 - 31393557 php-81al2.zip
 - 31898673 php-82al2.zip
 - 34576183 php-82al2-arm.zip
-- 31086096 php-83al2.zip
-- 33041773 php-83al2-arm.zip
+- 31763392 php-83al2.zip
+- 33708307 php-83al2-arm.zip
