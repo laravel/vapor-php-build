@@ -366,6 +366,8 @@ ARG sqlite
 ENV VERSION_SQLITE=${sqlite}
 ENV SQLITE_BUILD_DIR=${BUILD_DIR}/libsqlite3
 
+RUN LD_LIBRARY_PATH= yum install -y tcl
+
 RUN set -xe; \
     mkdir -p ${SQLITE_BUILD_DIR}; \
     curl -Ls https://github.com/sqlite/sqlite/archive/refs/tags/version-${VERSION_SQLITE}.tar.gz \
