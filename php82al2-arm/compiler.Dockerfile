@@ -19,7 +19,7 @@ RUN yum -y install openssl-devel perl-IPC-Cmd
 RUN  set -xe \
     && mkdir -p /tmp/cmake \
     && cd /tmp/cmake \
-    && curl -Ls  https://github.com/Kitware/CMake/releases/download/v3.27.6/cmake-3.27.6.tar.gz \
+    && curl -Ls  https://github.com/Kitware/CMake/releases/download/v3.30.1/cmake-3.30.1.tar.gz \
     | tar xzC /tmp/cmake --strip-components=1 \
     && ./bootstrap --prefix=/usr/local \
     && make -j $(nproc) \
