@@ -246,7 +246,7 @@ ENV LIBSODIUM_BUILD_DIR=${BUILD_DIR}/libsodium
 
 RUN set -xe; \
     mkdir -p ${LIBSODIUM_BUILD_DIR}; \
-    curl -Ls https://github.com/jedisct1/libsodium/archive/${VERSION_LIBSODIUM}.tar.gz \
+    curl -Ls https://github.com/jedisct1/libsodium/archive/${VERSION_LIBSODIUM}-RELEASE.tar.gz \
     | tar xzC ${LIBSODIUM_BUILD_DIR} --strip-components=1
 
 WORKDIR  ${LIBSODIUM_BUILD_DIR}/
@@ -360,6 +360,25 @@ RUN set -xe; \
 RUN set -xe; \
     make install
 
+# Build SQLite
+
+ARG sqlite
+ENV VERSION_SQLITE=${sqlite}
+ENV SQLITE_BUILD_DIR=${BUILD_DIR}/libsqlite3
+
+RUN LD_LIBRARY_PATH= yum install -y tcl
+
+RUN set -xe; \
+    mkdir -p ${SQLITE_BUILD_DIR}; \
+    curl -Ls https://github.com/sqlite/sqlite/archive/refs/tags/version-${VERSION_SQLITE}.tar.gz \
+    | tar xzC ${SQLITE_BUILD_DIR} --strip-components=1
+
+WORKDIR ${SQLITE_BUILD_DIR}/
+
+RUN ./configure --prefix=${INSTALL_DIR}
+
+RUN make && make install
+
 # Build PHP
 
 ARG php
@@ -375,7 +394,7 @@ RUN set -xe; \
 
 WORKDIR  ${PHP_BUILD_DIR}/
 
-RUN LD_LIBRARY_PATH= yum install -y readline-devel gettext-devel libicu-devel sqlite-devel libxslt-devel ImageMagick-devel
+RUN LD_LIBRARY_PATH= yum install -y readline-devel gettext-devel libicu-devel libxslt-devel ImageMagick-devel
 
 RUN cp -a /usr/lib64/libgpg-error.so* ${INSTALL_DIR}/lib64/
 RUN cp -a /usr/lib64/libtinfo.so* ${INSTALL_DIR}/lib64/
@@ -385,7 +404,6 @@ RUN cp -a /usr/lib64/libasprintf.so* ${INSTALL_DIR}/lib64/
 RUN cp -a /usr/lib64/libgettextpo.so* ${INSTALL_DIR}/lib64/
 RUN cp -a /usr/lib64/preloadable_libintl.so* ${INSTALL_DIR}/lib64/
 RUN cp -a /usr/lib64/lib*xslt*.so* ${INSTALL_DIR}/lib64/
-RUN cp -a /usr/lib64/libsqlite3*.so* ${INSTALL_DIR}/lib64/
 
 RUN set -xe \
     && ./buildconf --force \
