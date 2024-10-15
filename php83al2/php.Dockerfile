@@ -160,9 +160,9 @@ RUN set -xe; \
 WORKDIR  ${NGHTTP2_BUILD_DIR}/
 
 RUN set -xe; \
-    autoreconf -i && \
-    automake && \
-    autoconf && \
+    CFLAGS="" \
+    CPPFLAGS="-I${INSTALL_DIR}/include  -I/usr/include" \
+    LDFLAGS="-L${INSTALL_DIR}/lib64 -L${INSTALL_DIR}/lib" \
     ./configure --enable-lib-only --prefix=${INSTALL_DIR} && \
     make -j $(nproc) && \
     make install
