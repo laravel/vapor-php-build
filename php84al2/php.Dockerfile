@@ -474,7 +474,7 @@ RUN mkdir -p /opt/lib/curl
 
 RUN cp /opt/vapor/bin/* /opt/bin
 RUN cp /opt/vapor/sbin/* /opt/bin
- RUN cp /opt/vapor/lib/php/extensions/no-debug-non-zts-20240924/* /opt/bin
+RUN cp /opt/vapor/lib/php/extensions/no-debug-non-zts-20240924/* /opt/bin
 
 RUN cp /opt/vapor/lib/* /opt/lib || true
 RUN cp /opt/vapor/lib/libcurl* /opt/lib/curl || true
