@@ -394,7 +394,7 @@ RUN set -xe; \
 
 WORKDIR  ${PHP_BUILD_DIR}/
 
-RUN LD_LIBRARY_PATH= yum install -y readline-devel gettext-devel libicu60-devel-60.3-2.amzn2.0.1.armv6hl libxslt-devel ImageMagick-devel
+RUN LD_LIBRARY_PATH= yum install -y readline-devel gettext-devel libicu60-devel-60.3-2.amzn2.0.1.aarch64 libxslt-devel ImageMagick-devel
 
 RUN cp -a /usr/lib64/libgpg-error.so* ${INSTALL_DIR}/lib64/
 RUN cp -a /usr/lib64/libtinfo.so* ${INSTALL_DIR}/lib64/
