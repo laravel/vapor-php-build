@@ -20,7 +20,5 @@ cp /runtime/php.ini vapor/etc/php/conf.d/vapor.ini
 # cp /runtime/imagick/bin/* bin
 # cp /runtime/imagick/lib/* lib
 
-ls -la
-
 zip --quiet --recurse-paths /export/php-${PHP_SHORT_VERSION}.zip . --exclude "*php-cgi"
 # zip --delete /export/php-${PHP_SHORT_VERSION}.zip vapor/sbin/php-fpm bin/php-fpm
