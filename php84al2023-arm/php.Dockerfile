@@ -61,6 +61,8 @@ ENV OPENSSL_BUILD_DIR=${BUILD_DIR}/openssl
 ENV CA_BUNDLE_SOURCE="https://curl.se/ca/cacert.pem"
 ENV CA_BUNDLE="${INSTALL_DIR}/ssl/cert.pem"
 
+RUN LD_LIBRARY_PATH= yum install -y perl-FindBin perl-Pod-Html
+
 RUN set -xe; \
     mkdir -p ${OPENSSL_BUILD_DIR}; \
     curl -Ls  https://github.com/openssl/openssl/archive/openssl-${VERSION_OPENSSL}.tar.gz \
