@@ -407,6 +407,7 @@ RUN cp -a /usr/lib64/libasprintf.so* ${INSTALL_DIR}/lib64/
 RUN cp -a /usr/lib64/libgettextpo.so* ${INSTALL_DIR}/lib64/
 RUN cp -a /usr/lib64/preloadable_libintl.so* ${INSTALL_DIR}/lib64/
 RUN cp -a /usr/lib64/lib*xslt*.so* ${INSTALL_DIR}/lib64/
+RUN cp -a /usr/lib64/libicu*.so* ${INSTALL_DIR}/lib64/
 
 RUN set -xe \
  && ./buildconf --force \
