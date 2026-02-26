@@ -396,7 +396,7 @@ RUN set -xe; \
 
 WORKDIR  ${PHP_BUILD_DIR}/
 
-RUN LD_LIBRARY_PATH= yum install -y readline-devel gettext-devel libicu-devel libxslt-devel ImageMagick-devel
+RUN LD_LIBRARY_PATH= yum install -y readline-devel gettext-devel libxslt-devel ImageMagick-devel
 
 RUN cp -a /usr/lib64/libgpg-error.so* ${INSTALL_DIR}/lib64/
 RUN cp -a /usr/lib64/libtinfo.so* ${INSTALL_DIR}/lib64/
@@ -441,8 +441,7 @@ RUN set -xe \
     --with-pdo-mysql=shared,mysqlnd \
     --enable-pcntl \
     --with-zip \
-    --with-pdo-pgsql=shared,${INSTALL_DIR} \
-    --enable-intl=shared
+    --with-pdo-pgsql=shared,${INSTALL_DIR}
 
 RUN make -j $(nproc)
 
