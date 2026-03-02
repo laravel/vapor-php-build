@@ -13,6 +13,9 @@ ENV PKG_CONFIG_PATH="${INSTALL_DIR}/lib64/pkgconfig:${INSTALL_DIR}/lib/pkgconfig
 
 ENV LD_LIBRARY_PATH="${INSTALL_DIR}/lib64:${INSTALL_DIR}/lib"
 
+ENV CMAKE_BUILD_PARALLEL_LEVEL=4
+ENV MAKEFLAGS='-j4'
+
 # Create All The Necessary Build Directories
 
 RUN mkdir -p ${BUILD_DIR}  \
@@ -27,340 +30,7 @@ RUN mkdir -p ${BUILD_DIR}  \
     ${INSTALL_DIR}/sbin \
     ${INSTALL_DIR}/share
 
-
-# Build ZLIB (https://github.com/madler/zlib/releases)
-
-ARG zlib
-ENV VERSION_ZLIB=${zlib}
-ENV ZLIB_BUILD_DIR=${BUILD_DIR}/zlib
-
-RUN set -xe; \
-    mkdir -p ${ZLIB_BUILD_DIR}; \
-    curl -Ls https://github.com/madler/zlib/releases/download/v${VERSION_ZLIB}/zlib-${VERSION_ZLIB}.tar.xz \
-    | tar xJC ${ZLIB_BUILD_DIR} --strip-components=1
-
-WORKDIR  ${ZLIB_BUILD_DIR}/
-
-RUN set -xe; \
-    make distclean \
-    && CFLAGS="" \
-    CPPFLAGS="-I${INSTALL_DIR}/include  -I/usr/include" \
-    LDFLAGS="-L${INSTALL_DIR}/lib64 -L${INSTALL_DIR}/lib" \
-    ./configure \
-    --prefix=${INSTALL_DIR}
-
-RUN set -xe; \
-    make install \
-    && rm ${INSTALL_DIR}/lib/libz.a
-
-# Build OpenSSL (https://github.com/openssl/openssl/releases)
-
-ARG openssl
-ENV VERSION_OPENSSL=${openssl}
-ENV OPENSSL_BUILD_DIR=${BUILD_DIR}/openssl
-ENV CA_BUNDLE_SOURCE="https://curl.se/ca/cacert.pem"
-ENV CA_BUNDLE="${INSTALL_DIR}/ssl/cert.pem"
-
-RUN LD_LIBRARY_PATH= yum install -y perl-FindBin perl-Pod-Html
-
-RUN set -xe; \
-    mkdir -p ${OPENSSL_BUILD_DIR}; \
-    curl -Ls  https://github.com/openssl/openssl/archive/openssl-${VERSION_OPENSSL}.tar.gz \
-    | tar xzC ${OPENSSL_BUILD_DIR} --strip-components=1
-
-WORKDIR  ${OPENSSL_BUILD_DIR}/
-
-RUN set -xe; \
-    CFLAGS="" \
-    CPPFLAGS="-I${INSTALL_DIR}/include  -I/usr/include" \
-    LDFLAGS="-L${INSTALL_DIR}/lib64 -L${INSTALL_DIR}/lib" \
-    ./config \
-        --prefix=${INSTALL_DIR} \
-        --openssldir=${INSTALL_DIR}/ssl \
-        --release \
-        enable-tls1_3 \
-        no-tests \
-        shared \
-        zlib
-
-RUN set -xe; \
-    make install \
-    && curl -L -k -o ${CA_BUNDLE} ${CA_BUNDLE_SOURCE}
-
-# Build LibXML2 (https://gitlab.gnome.org/GNOME/libxml2/-/releases)
-
-ARG libxml2
-ENV VERSION_XML2=${libxml2}
-ENV XML2_BUILD_DIR=${BUILD_DIR}/xml2
-
-RUN set -xe; \
-    mkdir -p ${XML2_BUILD_DIR}; \
-    curl -Ls https://download.gnome.org/sources/libxml2/${VERSION_XML2%.*}/libxml2-${VERSION_XML2}.tar.xz \
-    | tar xJC ${XML2_BUILD_DIR} --strip-components=1
-
-WORKDIR  ${XML2_BUILD_DIR}/
-
-RUN set -xe; \
-    CFLAGS="" \
-    CPPFLAGS="-I${INSTALL_DIR}/include  -I/usr/include" \
-    LDFLAGS="-L${INSTALL_DIR}/lib64 -L${INSTALL_DIR}/lib" \
-    ./configure \
-        --prefix=${INSTALL_DIR} \
-        --with-sysroot=${INSTALL_DIR} \
-        --enable-shared \
-        --disable-static \
-        --with-html \
-        --with-history \
-        --enable-ipv6=no \
-        --with-icu \
-        --with-zlib=${INSTALL_DIR} \
-        --without-python
-
-RUN set -xe; \
-    make install \
-    && cp xml2-config ${INSTALL_DIR}/bin/xml2-config
-
-# Build LibSSH2 (https://github.com/libssh2/libssh2/releases/)
-
-ARG libssh2
-ENV VERSION_LIBSSH2=${libssh2}
-ENV LIBSSH2_BUILD_DIR=${BUILD_DIR}/libssh2
-
-RUN set -xe; \
-    mkdir -p ${LIBSSH2_BUILD_DIR}/bin; \
-    curl -Ls https://github.com/libssh2/libssh2/releases/download/libssh2-${VERSION_LIBSSH2}/libssh2-${VERSION_LIBSSH2}.tar.gz \
-    | tar xzC ${LIBSSH2_BUILD_DIR} --strip-components=1
-
-WORKDIR  ${LIBSSH2_BUILD_DIR}/bin/
-
-RUN set -xe; \
-    CFLAGS="" \
-    CPPFLAGS="-I${INSTALL_DIR}/include  -I/usr/include" \
-    LDFLAGS="-L${INSTALL_DIR}/lib64 -L${INSTALL_DIR}/lib" \
-    cmake .. \
-        -DBUILD_SHARED_LIBS=ON \
-        -DCRYPTO_BACKEND=OpenSSL \
-        -DENABLE_ZLIB_COMPRESSION=ON \
-        -DCMAKE_INSTALL_PREFIX=${INSTALL_DIR} \
-        -DCMAKE_BUILD_TYPE=RELEASE
-
-RUN set -xe; \
-    cmake  --build . --target install
-
-# Build nghttp2 (https://github.com/nghttp2/nghttp2/releases/)
-
-ARG nghttp2
-ENV VERSION_NGHTTP2=${nghttp2}
-ENV NGHTTP2_BUILD_DIR=${BUILD_DIR}/nghttp2
-
-RUN set -xe; \
-    mkdir -p ${NGHTTP2_BUILD_DIR}/bin; \
-    curl -Ls https://github.com/nghttp2/nghttp2/releases/download/v${VERSION_NGHTTP2}/nghttp2-${VERSION_NGHTTP2}.tar.gz \
-    | tar xzC ${NGHTTP2_BUILD_DIR} --strip-components=1
-
-WORKDIR  ${NGHTTP2_BUILD_DIR}/
-
-RUN set -xe; \
-    CFLAGS="" \
-    CPPFLAGS="-I${INSTALL_DIR}/include  -I/usr/include" \
-    LDFLAGS="-L${INSTALL_DIR}/lib64 -L${INSTALL_DIR}/lib" \
-    ./configure --enable-lib-only --prefix=${INSTALL_DIR} && \
-    make -j $(nproc) && \
-    make install
-
-# Build Curl (https://github.com/curl/curl/releases/)
-
-ARG curl
-ENV VERSION_CURL=${curl}
-ENV CURL_BUILD_DIR=${BUILD_DIR}/curl
-
-RUN set -xe; \
-    mkdir -p ${CURL_BUILD_DIR}/bin; \
-    curl -Ls https://github.com/curl/curl/archive/curl-${VERSION_CURL//./_}.tar.gz \
-    | tar xzC ${CURL_BUILD_DIR} --strip-components=1
-
-WORKDIR  ${CURL_BUILD_DIR}/
-
-RUN set -xe; \
-    ./buildconf \
-     && CFLAGS="" \
-        CPPFLAGS="-I${INSTALL_DIR}/include  -I/usr/include" \
-        LDFLAGS="-L${INSTALL_DIR}/lib64 -L${INSTALL_DIR}/lib" \
-        ./configure \
-            --prefix=${INSTALL_DIR} \
-            --with-ca-bundle=${CA_BUNDLE} \
-            --enable-shared \
-            --disable-static \
-            --enable-optimize \
-            --disable-warnings \
-            --disable-dependency-tracking \
-            --with-zlib \
-            --enable-http \
-            --enable-ftp  \
-            --enable-file \
-            --enable-ldaps  \
-            --enable-proxy  \
-            --enable-tftp \
-            --enable-ipv6 \
-            --enable-openssl-auto-load-config \
-            --enable-cookies \
-            --with-gnu-ld \
-            --with-ssl \
-            --with-libssh2 \
-            --with-nghttp2 \
-            --without-libpsl
-
-RUN set -xe; \
-    make install
-
-# Build Libzip (https://github.com/nih-at/libzip/releases)
-
-ARG libzip
-ENV VERSION_ZIP=${libzip}
-ENV ZIP_BUILD_DIR=${BUILD_DIR}/zip
-
-RUN set -xe; \
-    mkdir -p ${ZIP_BUILD_DIR}/bin/; \
-# Download and upack the source code
-    curl -Ls https://github.com/nih-at/libzip/releases/download/v${VERSION_ZIP}/libzip-${VERSION_ZIP}.tar.gz \
-  | tar xzC ${ZIP_BUILD_DIR} --strip-components=1
-
-# Move into the unpackaged code directory
-WORKDIR  ${ZIP_BUILD_DIR}/bin/
-
-# Configure the build
-RUN set -xe; \
-    CFLAGS="" \
-    CPPFLAGS="-I${INSTALL_DIR}/include  -I/usr/include" \
-    LDFLAGS="-L${INSTALL_DIR}/lib64 -L${INSTALL_DIR}/lib" \
-    cmake .. \
-    -DCMAKE_INSTALL_PREFIX=${INSTALL_DIR} \
-    -DCMAKE_BUILD_TYPE=RELEASE
-
-RUN set -xe; \
-    cmake  --build . --target install
-
-# Build Libsodium (https://github.com/jedisct1/libsodium/releases)
-
-ARG libsodium
-ENV VERSION_LIBSODIUM=${libsodium}
-ENV LIBSODIUM_BUILD_DIR=${BUILD_DIR}/libsodium
-
-RUN set -xe; \
-    mkdir -p ${LIBSODIUM_BUILD_DIR}; \
-    curl -Ls https://github.com/jedisct1/libsodium/archive/${VERSION_LIBSODIUM}-RELEASE.tar.gz \
-    | tar xzC ${LIBSODIUM_BUILD_DIR} --strip-components=1
-
-WORKDIR  ${LIBSODIUM_BUILD_DIR}/
-
-RUN set -xe; \
-    CFLAGS="" \
-    CPPFLAGS="-I${INSTALL_DIR}/include  -I/usr/include" \
-    LDFLAGS="-L${INSTALL_DIR}/lib64 -L${INSTALL_DIR}/lib" \
-    ./autogen.sh \
-    && ./configure --prefix=${INSTALL_DIR}
-
-RUN set -xe; \
-    make install
-
-# Build Postgres (https://github.com/postgres/postgres/releases/)
-
-ARG postgres
-ENV VERSION_POSTGRES=${postgres}
-ENV POSTGRES_BUILD_DIR=${BUILD_DIR}/postgres
-
-RUN set -xe; \
-    mkdir -p ${POSTGRES_BUILD_DIR}/bin; \
-    curl -Ls https://github.com/postgres/postgres/archive/REL_${VERSION_POSTGRES//./_}.tar.gz \
-    | tar xzC ${POSTGRES_BUILD_DIR} --strip-components=1
-
-WORKDIR  ${POSTGRES_BUILD_DIR}/
-
-RUN set -xe; \
-    CFLAGS="" \
-    CPPFLAGS="-I${INSTALL_DIR}/include  -I/usr/include" \
-    LDFLAGS="-L${INSTALL_DIR}/lib64 -L${INSTALL_DIR}/lib" \
-    ./configure --prefix=${INSTALL_DIR} --with-openssl --without-readline
-
-RUN set -xe; cd ${POSTGRES_BUILD_DIR}/src/interfaces/libpq && make && make install
-RUN set -xe; cd ${POSTGRES_BUILD_DIR}/src/bin/pg_config && make && make install
-RUN set -xe; cd ${POSTGRES_BUILD_DIR}/src/backend && make generated-headers
-RUN set -xe; cd ${POSTGRES_BUILD_DIR}/src/include && make install
-
-# Build libjpeg
-
-ARG libjpeg
-ENV VERSION_LIBJPEG=${libjpeg}
-ENV LIBJPEG_BUILD_DIR=${BUILD_DIR}/libjpeg
-
-RUN set -xe; \
-    mkdir -p ${LIBJPEG_BUILD_DIR}/bin; \
-    curl -Ls http://www.ijg.org/files/jpegsrc.${VERSION_LIBJPEG}.tar.gz \
-    | tar xzC ${LIBJPEG_BUILD_DIR} --strip-components=1
-
-WORKDIR  ${LIBJPEG_BUILD_DIR}/
-
-RUN set -xe; \
-    CFLAGS="" \
-    CPPFLAGS="-I${INSTALL_DIR}/include  -I/usr/include" \
-    LDFLAGS="-L${INSTALL_DIR}/lib64 -L${INSTALL_DIR}/lib" \
-    ./configure \
-        --prefix=${INSTALL_DIR} \
-        --enable-shared \
-        --disable-static
-
-RUN set -xe; \
-    make install
-
-# Build libpng
-
-ARG libpng
-ENV VERSION_LIBPNG=${libpng}
-ENV LIBPNG_BUILD_DIR=${BUILD_DIR}/libpng
-
-RUN set -xe; \
-    mkdir -p ${LIBPNG_BUILD_DIR}/bin; \
-    curl -Ls https://download.sourceforge.net/libpng/libpng-${VERSION_LIBPNG}.tar.gz \
-    | tar xzC ${LIBPNG_BUILD_DIR} --strip-components=1
-
-WORKDIR  ${LIBPNG_BUILD_DIR}/
-
-RUN set -xe; \
-    CFLAGS="" \
-    CPPFLAGS="-I${INSTALL_DIR}/include  -I/usr/include" \
-    LDFLAGS="-L${INSTALL_DIR}/lib64 -L${INSTALL_DIR}/lib" \
-    ./configure \
-        --prefix=${INSTALL_DIR} \
-        --enable-shared \
-        --disable-static
-
-RUN set -xe; \
-    make install
-
-# Build Oniguruma
-
-ARG oniguruma
-ENV VERSION_ONIGURUMA=${oniguruma}
-ENV LIBONIG_BUILD_DIR=${BUILD_DIR}/libonig
-
-RUN  set -xe \
-    && mkdir -p ${LIBONIG_BUILD_DIR}/bin \
-    && curl -Ls https://github.com/kkos/oniguruma/releases/download/v${VERSION_ONIGURUMA}/onig-${VERSION_ONIGURUMA}.tar.gz \
-    | tar xzC ${LIBONIG_BUILD_DIR} --strip-components=1
-
-WORKDIR  ${LIBONIG_BUILD_DIR}/
-
-RUN set -xe; \
-    CFLAGS="" \
-    CPPFLAGS="-I${INSTALL_DIR}/include  -I/usr/include" \
-    LDFLAGS="-L${INSTALL_DIR}/lib64 -L${INSTALL_DIR}/lib" \
-    && ./configure \
-        --prefix=${INSTALL_DIR} \
-        --enable-shared \
-        --disable-static
-
-RUN set -xe; \
-    make install
+RUN LD_LIBRARY_PATH= yum install -y readline-devel oniguruma-devel libpq-devel zlib-devel libzip-devel openssl-devel libcurl-devel libsodium-devel libicu-devel gettext-devel libxslt-devel ImageMagick-devel libpng-devel libjpeg-devel
 
 # Build SQLite
 
@@ -376,9 +46,7 @@ RUN set -xe; \
     | tar xzC ${SQLITE_BUILD_DIR} --strip-components=1
 
 WORKDIR ${SQLITE_BUILD_DIR}/
-
-RUN ./configure --prefix=${INSTALL_DIR}
-
+RUN CFLAGS="-Os" CPPFLAGS="-Os" ./configure --prefix=${INSTALL_DIR}
 RUN make && make install
 
 # Build PHP
@@ -396,23 +64,13 @@ RUN set -xe; \
 
 WORKDIR  ${PHP_BUILD_DIR}/
 
-RUN LD_LIBRARY_PATH= yum install -y readline-devel gettext-devel libxslt-devel ImageMagick-devel
-
-RUN cp -a /usr/lib64/libgpg-error.so* ${INSTALL_DIR}/lib64/
-RUN cp -a /usr/lib64/libtinfo.so* ${INSTALL_DIR}/lib64/
-RUN cp -a /usr/lib64/libgcrypt.so* ${INSTALL_DIR}/lib64/
-RUN cp -a /usr/lib64/libreadline.so?* ${INSTALL_DIR}/lib64/
-RUN cp -a /usr/lib64/libasprintf.so* ${INSTALL_DIR}/lib64/
-RUN cp -a /usr/lib64/libgettextpo.so* ${INSTALL_DIR}/lib64/
-RUN cp -a /usr/lib64/preloadable_libintl.so* ${INSTALL_DIR}/lib64/
-RUN cp -a /usr/lib64/lib*xslt*.so* ${INSTALL_DIR}/lib64/
-
 RUN set -xe \
  && ./buildconf --force \
  && CFLAGS="-fstack-protector-strong -fpic -fpie -Os -I${INSTALL_DIR}/include -I/usr/include -ffunction-sections -fdata-sections" \
     CPPFLAGS="-fstack-protector-strong -fpic -fpie -Os -I${INSTALL_DIR}/include -I/usr/include -ffunction-sections -fdata-sections" \
     LDFLAGS="-L${INSTALL_DIR}/lib64 -L${INSTALL_DIR}/lib -Wl,-O1 -Wl,--strip-all -Wl,--hash-style=both -pie" \
     ./configure \
+        --build=x86_64-pc-linux-gnu \
         --prefix=${INSTALL_DIR} \
         --enable-option-checking=fatal \
         --with-config-file-path=${INSTALL_DIR}/etc/php \
@@ -428,7 +86,7 @@ RUN set -xe \
         --with-sodium \
         --with-readline \
         --with-openssl \
-        --with-zlib=${INSTALL_DIR} \
+        --with-zlib \
         --with-curl \
         --enable-bcmath \
         --enable-sockets \
@@ -438,10 +96,11 @@ RUN set -xe \
         --with-pear \
         --enable-mbstring \
         --enable-soap \
-        --with-pdo-mysql=shared,mysqlnd \
+        --with-pdo-mysql=mysqlnd \
         --enable-pcntl \
         --with-zip \
-        --with-pdo-pgsql=shared,${INSTALL_DIR}
+        --with-pdo-pgsql \
+        --enable-intl=shared
 
 RUN make -j $(nproc)
 
@@ -460,6 +119,27 @@ ENV VERSION_REDIS=${redis}
 
 RUN pecl install -f redis-${VERSION_REDIS}
 
+# Copy libraries
+
+RUN cp -aL /usr/lib64/libtinfo.so.6 ${INSTALL_DIR}/lib64/
+RUN cp -aL /usr/lib64/libonig.so.5 ${INSTALL_DIR}/lib64/
+RUN cp -aL /usr/lib64/libsodium.so.26 ${INSTALL_DIR}/lib64/
+RUN cp -aL /usr/lib64/libzip.so.5 ${INSTALL_DIR}/lib64/
+RUN cp -aL /usr/lib64/libpq.so.5 ${INSTALL_DIR}/lib64/
+RUN cp -aL /usr/lib64/libldap_r-2.4.so.2 ${INSTALL_DIR}/lib64/
+RUN cp -aL /usr/lib64/liblber-2.4.so.2 ${INSTALL_DIR}/lib64/
+RUN cp -aL /usr/lib64/libsasl2.so.3 ${INSTALL_DIR}/lib64/
+RUN cp -aL /usr/lib64/libicuio.so.67 ${INSTALL_DIR}/lib64/
+RUN cp -aL /usr/lib64/libicui18n.so.67 ${INSTALL_DIR}/lib64/
+RUN cp -aL /usr/lib64/libicuuc.so.67 ${INSTALL_DIR}/lib64/
+RUN cp -aL /usr/lib64/libicudata.so.67 ${INSTALL_DIR}/lib64/
+RUN cp -aL /usr/lib64/libxslt.so.1 ${INSTALL_DIR}/lib64/
+RUN cp -aL /usr/lib64/libexslt.so.0 ${INSTALL_DIR}/lib64/
+RUN cp -aL /usr/lib64/libpng16.so.16 ${INSTALL_DIR}/lib64/
+RUN cp -aL /usr/lib64/libjpeg.so.62 ${INSTALL_DIR}/lib64/
+RUN cp -aL /usr/lib64/libcrypt.so.2 ${INSTALL_DIR}/lib64/
+RUN cp -aL /opt/vapor/lib/libsqlite3.so.0 ${INSTALL_DIR}/lib64/
+
 # Strip All Unneeded Symbols
 
 RUN find ${INSTALL_DIR} -type f -name "*.so*" -o -name "*.a"  -exec strip --strip-unneeded {} \;
@@ -476,14 +156,9 @@ RUN cp /opt/vapor/sbin/* /opt/bin
 
 RUN cp /opt/vapor/lib/php/extensions/no-debug-non-zts-20250925/* /opt/bin
 
-RUN cp /opt/vapor/lib/* /opt/lib || true
-RUN cp /opt/vapor/lib/libcurl* /opt/lib/curl || true
-
-RUN cp "${INSTALL_DIR}/ssl/cert.pem" /opt/lib/curl/cert.pem
+RUN cp /etc/ssl/cert.pem /opt/lib/curl/cert.pem
 RUN cp /opt/vapor/lib64/* /opt/lib || true
 
-RUN ls /opt/bin
-RUN /opt/bin/php -i | grep curl
 
 # Copy Everything To The Base Container
 
@@ -492,7 +167,7 @@ FROM amazonlinux:2023
 ENV INSTALL_DIR="/opt/vapor"
 
 ENV PATH="/opt/bin:${PATH}" \
-    LD_LIBRARY_PATH="${INSTALL_DIR}/lib64:${INSTALL_DIR}/lib"
+    LD_LIBRARY_PATH="/opt/lib:/opt/lib/bref:/lib64:/usr/lib64:/var/runtime:/var/runtime/lib:/var/task:/var/task/lib"
 
 RUN mkdir -p /opt
 
@@ -500,3 +175,11 @@ WORKDIR /opt
 
 COPY --from=php_builder /opt /opt
 RUN LD_LIBRARY_PATH= yum -y install zip
+
+
+COPY --chmod=755 /runtime/bootstrap /opt
+COPY --chmod=755 /runtime/bootstrap.php /opt
+
+RUN rm -rf vapor/
+RUN mkdir -p vapor/etc/php/conf.d
+COPY /runtime/php.ini vapor/etc/php/conf.d
