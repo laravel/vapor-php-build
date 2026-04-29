@@ -51,7 +51,7 @@ $regions = [
     'eu-west-3' => 'EU (Paris) (eu-west-3)',
     'eu-north-1' => 'EU (Stockholm) (eu-north-1)',
     'eu-south-1' => 'EU (Milan) (eu-south-1)',
-    'me-south-1' => 'Middle East (Bahrain) (me-south-1)',
+//    'me-south-1' => 'Middle East (Bahrain) (me-south-1)',
     'sa-east-1' => 'South America (São Paulo) (sa-east-1)',
 ];
 
