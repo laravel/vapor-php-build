@@ -8,17 +8,6 @@ require_once __DIR__.'/vendor/autoload.php';
 Dotenv::createImmutable(__DIR__)->safeLoad();
 
 $layers = [
-    // Amazon Linux 2:
-    'php-81al2' => 'Laravel Vapor PHP 8.1 for Amazon Linux 2',
-    'php-82al2' => 'Laravel Vapor PHP 8.2 for Amazon Linux 2',
-    'php-82al2-arm' => 'Laravel Vapor PHP 8.2 for Amazon Linux 2 ARM',
-    'php-83al2' => 'Laravel Vapor PHP 8.3 for Amazon Linux 2',
-    'php-83al2-arm' => 'Laravel Vapor PHP 8.3 for Amazon Linux 2 ARM',
-    'php-84al2' => 'Laravel Vapor PHP 8.4 for Amazon Linux 2',
-    'php-84al2-arm' => 'Laravel Vapor PHP 8.4 for Amazon Linux 2 ARM',
-    'php-85al2' => 'Laravel Vapor PHP 8.5 for Amazon Linux 2',
-    'php-85al2-arm' => 'Laravel Vapor PHP 8.5 for Amazon Linux 2 ARM',
-
     // Amazon Linux 2023:
     'php-83al2023' => 'Laravel Vapor PHP 8.3 for Amazon Linux 2023',
     'php-83al2023-arm' => 'Laravel Vapor PHP 8.3 for Amazon Linux 2023 ARM',
