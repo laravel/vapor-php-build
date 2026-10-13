@@ -118,13 +118,6 @@ ENV VERSION_REDIS=${redis}
 
 RUN pecl install -f redis-${VERSION_REDIS}
 
-# Build TimezoneDB (https://pecl.php.net/package/timezonedb)
-
-ARG timezonedb
-ENV VERSION_TIMEZONEDB=${timezonedb}
-
-RUN pecl install -f timezonedb-${VERSION_TIMEZONEDB}
-
 # Copy libraries
 
 RUN cp -aL /usr/lib64/libtinfo.so.6 ${INSTALL_DIR}/lib64/
