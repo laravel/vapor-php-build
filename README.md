@@ -55,4 +55,4 @@ The final step is to deploy Vapor by tagging the release.
 
 ## Testing locally
 
-To test images locally, you may use Docker on your local machine to build every runtime and bash into the container. You may then verify the PHP version and extensions installed. 
+To test images locally, you may use Docker on your local machine to build every runtime and bash into the container. You may then verify the PHP version and extensions installed.

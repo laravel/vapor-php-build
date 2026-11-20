@@ -30,7 +30,7 @@ RUN mkdir -p ${BUILD_DIR}  \
     ${INSTALL_DIR}/sbin \
     ${INSTALL_DIR}/share
 
-RUN LD_LIBRARY_PATH= yum install -y readline-devel oniguruma-devel libpq-devel zlib-devel libzip-devel openssl-devel libcurl-devel libsodium-devel libicu-devel gettext-devel libxslt-devel ImageMagick-devel libpng-devel libjpeg-devel
+RUN LD_LIBRARY_PATH= dnf install -y readline-devel oniguruma-devel libpq-devel zlib-devel libzip-devel openssl-devel libcurl-devel libsodium-devel libicu-devel gettext-devel libxslt-devel ImageMagick-devel libpng-devel libjpeg-devel
 
 # Build SQLite
 
@@ -38,7 +38,7 @@ ARG sqlite
 ENV VERSION_SQLITE=${sqlite}
 ENV SQLITE_BUILD_DIR=${BUILD_DIR}/libsqlite3
 
-RUN LD_LIBRARY_PATH= yum install -y tcl
+RUN LD_LIBRARY_PATH= dnf install -y tcl
 
 RUN set -xe; \
     mkdir -p ${SQLITE_BUILD_DIR}; \
@@ -93,7 +93,6 @@ RUN set -xe \
         --enable-exif \
         --enable-ftp \
         --with-gettext \
-        --with-pear \
         --enable-mbstring \
         --enable-soap \
         --with-pdo-mysql=mysqlnd \
@@ -104,20 +103,22 @@ RUN set -xe \
 
 RUN make -j $(nproc)
 
-# Override PEAR URL Since It Is Down
-
 RUN set -xe; \
-    make install PEAR_INSTALLER_URL='https://github.com/pear/pearweb_phars/raw/master/install-pear-nozlib.phar'; \
+    make install; \
     { find ${INSTALL_DIR}/bin ${INSTALL_DIR}/sbin -type f -perm +0111 -exec strip --strip-all '{}' + || true; }; \
     make clean; \
     cp php.ini-production ${INSTALL_DIR}/etc/php/php.ini
 
-# Build Redis (https://pecl.php.net/package/redis/)
+# Install PIE
+RUN curl -fsSL -o /usr/local/bin/pie https://github.com/php/pie/releases/latest/download/pie.phar \
+    && chmod +x /usr/local/bin/pie
+
+# Install Redis
 
 ARG redis
 ENV VERSION_REDIS=${redis}
 
-RUN pecl install -f redis-${VERSION_REDIS}
+RUN pie install --no-cache phpredis/phpredis:${VERSION_REDIS}
 
 # Copy libraries
 
@@ -154,7 +155,7 @@ RUN mkdir -p /opt/lib/curl
 RUN cp /opt/vapor/bin/* /opt/bin
 RUN cp /opt/vapor/sbin/* /opt/bin
 
-RUN cp /opt/vapor/lib/php/extensions/no-debug-non-zts-20250925/* /opt/bin
+RUN cp $(php -r 'echo ini_get("extension_dir");')/* /opt/bin/
 
 RUN cp /etc/ssl/cert.pem /opt/lib/curl/cert.pem
 RUN cp /opt/vapor/lib64/* /opt/lib || true
@@ -174,7 +175,7 @@ RUN mkdir -p /opt
 WORKDIR /opt
 
 COPY --from=php_builder /opt /opt
-RUN LD_LIBRARY_PATH= yum -y install zip
+RUN LD_LIBRARY_PATH= dnf -y install zip
 
 
 COPY --chmod=755 /runtime/bootstrap /opt
