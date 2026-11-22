@@ -82,7 +82,6 @@ RUN set -xe \
         --with-xsl=${INSTALL_DIR} \
         --enable-gd \
         --disable-phpdbg \
-        # --disable-phpdbg-webhelper \
         --with-sodium \
         --with-readline \
         --with-openssl \
