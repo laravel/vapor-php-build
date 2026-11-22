@@ -4,7 +4,7 @@ compiler: compiler.Dockerfile
 	docker build -f ${PWD}/compiler.Dockerfile -t vapor/runtime/compiler:latest .
 
 build: compiler
-	docker build -f ${PWD}/php.Dockerfile -t vapor/runtime/php-86al2023-arm:latest $(shell helpers/buildArguments.php php85) .
+	docker build -f ${PWD}/php.Dockerfile -t vapor/runtime/php-86al2023-arm:latest $(shell helpers/buildArguments.php php86) .
 
 distribution: build
 	docker run --rm \
