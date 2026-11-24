@@ -82,7 +82,7 @@ echo "Publishing $ARCH layers: ${LAYERS_TO_PUBLISH[*]}"
 for region in "${REGIONS[@]}"; do
   for layer in "${LAYERS_TO_PUBLISH[@]}"; do
     description="${LAYERS[$layer]}"
-    zip_file="./export/${layer}.zip"
+    zip_file="./../export/${layer}.zip"
 
     if [[ ! -f "$zip_file" ]]; then
       echo "Missing zip: $zip_file" >&2
