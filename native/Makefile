@@ -15,3 +15,7 @@ VOLUMES := --volume ${PWD}/runtime:/runtime:ro --volume ${PWD}/../export:/export
 build-83:
 	docker build -f ${PWD}/Dockerfile --build-arg php=8.3.37 --build-arg redis=6.2.0 --build-arg ini_file=php.ini -t vapor/runtime/php-83al2023:latest .
 	docker run --rm --env LAYER_NAME=83al2023$(IMAGE_SUFFIX) $(VOLUMES) vapor/runtime/php-83al2023:latest /export.sh
+
+build-84:
+	docker build -f ${PWD}/Dockerfile --build-arg php=8.4.28 --build-arg redis=6.1.0 --build-arg ini_file=php.ini -t vapor/runtime/php-84al2023:latest .
+	docker run --rm --env LAYER_NAME=84al2023$(IMAGE_SUFFIX) $(VOLUMES) vapor/runtime/php-84al2023:latest /export.sh
