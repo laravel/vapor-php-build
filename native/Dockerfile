@@ -168,13 +168,13 @@ RUN cp ${INSTALL_DIR}/bin/php /opt/bin/php \
 
 # ---------- Copy everything ----------
 
-WORKDIR /opt
-
-RUN rm -rf vapor/ \
-    && mkdir -p vapor/etc/php/conf.d
-
-ARG ini_file
-
-COPY --chmod=755 /runtime/bootstrap /opt
-COPY --chmod=755 /runtime/bootstrap.php /opt
-COPY /runtime/${ini_file} vapor/etc/php/conf.d/php.ini
+#WORKDIR /opt
+#
+#RUN rm -rf vapor/ \
+#    && mkdir -p vapor/etc/php/conf.d
+#
+#ARG ini_file
+#
+#COPY --chmod=755 /runtime/bootstrap /opt
+#COPY --chmod=755 /runtime/bootstrap.php /opt
+#COPY /runtime/${ini_file} vapor/etc/php/conf.d/php.ini
