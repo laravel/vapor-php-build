@@ -159,7 +159,8 @@ RUN find ${INSTALL_DIR} -type f -executable -exec sh -c "file -i '{}' | grep -q 
 
 # ---------- Copy everything ----------
 
-RUN cp ${INSTALL_DIR}/bin/* /opt/bin \
+RUN cp ${INSTALL_DIR}/bin/php /opt/bin/php \
+    && cp ${INSTALL_DIR}/bin/php-fpm /opt/bin/php-fpm \
     && cp ${INSTALL_DIR}/sbin/* /opt/bin \
     && cp ${INSTALL_DIR}/lib64/* /opt/lib || true \
     && cp $(php -r 'echo ini_get("extension_dir");')/* /opt/bin/ \
