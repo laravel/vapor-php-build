@@ -48,7 +48,7 @@ RUN set -xe \
         tcl \
         zip \
     && dnf clean all \
-    && rm -rf /var/cache/dnf \
+    && rm -rf /var/cache/dnf
 
 # ---------- Download pie ----------
 
@@ -63,7 +63,7 @@ ENV SQLITE_BUILD_DIR=${BUILD_DIR}/libsqlite3
 RUN set -xe; \
     mkdir -p ${SQLITE_BUILD_DIR}; \
     curl -Ls https://github.com/sqlite/sqlite/archive/refs/tags/version-${VERSION_SQLITE}.tar.gz \
-    | tar xzC ${SQLITE_BUILD_DIR} --strip-components=1 \
+    | tar xzC ${SQLITE_BUILD_DIR} --strip-components=1
 
 WORKDIR ${SQLITE_BUILD_DIR}/
 RUN CFLAGS="-Os" CPPFLAGS="-Os" ./configure --prefix=${INSTALL_DIR} \
@@ -77,7 +77,7 @@ ENV PHP_BUILD_DIR=${BUILD_DIR}/php
 RUN set -xe; \
     mkdir -p ${PHP_BUILD_DIR}; \
     curl -Ls https://php.net/distributions/php-${VERSION_PHP}.tar.gz \
-    | tar xzC ${PHP_BUILD_DIR} --strip-components=1 \
+    | tar xzC ${PHP_BUILD_DIR} --strip-components=1
 
 WORKDIR  ${PHP_BUILD_DIR}/
 
