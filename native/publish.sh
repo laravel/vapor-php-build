@@ -122,6 +122,6 @@ for region in "${REGIONS_TO_PUBLISH[@]}"; do
       --principal '*' \
       --output text >/dev/null
 
-    echo "[$region] $layer: $version_arn"
+    echo "[$region]: $version_arn"
   done
 done
