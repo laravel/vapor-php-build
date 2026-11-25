@@ -18,17 +18,17 @@ clean:
 build: clean build-83 build-84 build-85 build-86
 
 build-83:
-	docker build -f ${PWD}/Dockerfile --build-arg php=8.3.37 --build-arg redis=6.2.0 --build-arg ini_file=php.ini -t vapor/runtime/php-83al2023:latest .
+	docker build --build-arg php=8.3.37 --build-arg redis=6.2.0 --build-arg ini_file=php.ini -t vapor/runtime/php-83al2023:latest .
 	docker run --rm --env LAYER_NAME=83al2023$(IMAGE_SUFFIX) $(VOLUMES) vapor/runtime/php-83al2023:latest /export.sh
 
 build-84:
-	docker build -f ${PWD}/Dockerfile --build-arg php=8.4.28 --build-arg redis=6.2.0 --build-arg ini_file=php.ini -t vapor/runtime/php-84al2023:latest .
+	docker build --build-arg php=8.4.28 --build-arg redis=6.2.0 --build-arg ini_file=php.ini -t vapor/runtime/php-84al2023:latest .
 	docker run --rm --env LAYER_NAME=84al2023$(IMAGE_SUFFIX) $(VOLUMES) vapor/runtime/php-84al2023:latest /export.sh
 
 build-85:
-	docker build -f ${PWD}/Dockerfile --build-arg php=8.5.13 --build-arg redis=6.3.0 --build-arg ini_file=php85plus.ini -t vapor/runtime/php-85al2023:latest .
+	docker build --build-arg php=8.5.13 --build-arg redis=6.3.0 --build-arg ini_file=php85plus.ini -t vapor/runtime/php-85al2023:latest .
 	docker run --rm --env LAYER_NAME=85al2023$(IMAGE_SUFFIX) $(VOLUMES) vapor/runtime/php-85al2023:latest /export.sh
 
 build-86:
-	docker build -f ${PWD}/Dockerfile --build-arg php=8.6.0 --build-arg redis=dev-develop --build-arg ini_file=php85plus.ini -t vapor/runtime/php-86al2023:latest .
+	docker build --build-arg php=8.6.0 --build-arg redis=dev-develop --build-arg ini_file=php85plus.ini -t vapor/runtime/php-86al2023:latest .
 	docker run --rm --env LAYER_NAME=86al2023$(IMAGE_SUFFIX) $(VOLUMES) vapor/runtime/php-86al2023:latest /export.sh
