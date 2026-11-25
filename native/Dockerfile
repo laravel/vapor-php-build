@@ -133,24 +133,24 @@ RUN pie install --no-cache phpredis/phpredis:${VERSION_REDIS}
 
 # ---------- Copy libraries ----------
 
-RUN cp -aL /usr/lib64/libtinfo.so.6 ${INSTALL_DIR}/lib64/
-RUN cp -aL /usr/lib64/libonig.so.5 ${INSTALL_DIR}/lib64/
-RUN cp -aL /usr/lib64/libsodium.so.26 ${INSTALL_DIR}/lib64/
-RUN cp -aL /usr/lib64/libzip.so.5 ${INSTALL_DIR}/lib64/
-RUN cp -aL /usr/lib64/libpq.so.5 ${INSTALL_DIR}/lib64/
-RUN cp -aL /usr/lib64/libldap_r-2.4.so.2 ${INSTALL_DIR}/lib64/
-RUN cp -aL /usr/lib64/liblber-2.4.so.2 ${INSTALL_DIR}/lib64/
-RUN cp -aL /usr/lib64/libsasl2.so.3 ${INSTALL_DIR}/lib64/
-RUN cp -aL /usr/lib64/libicuio.so.67 ${INSTALL_DIR}/lib64/
-RUN cp -aL /usr/lib64/libicui18n.so.67 ${INSTALL_DIR}/lib64/
-RUN cp -aL /usr/lib64/libicuuc.so.67 ${INSTALL_DIR}/lib64/
-RUN cp -aL /usr/lib64/libicudata.so.67 ${INSTALL_DIR}/lib64/
-RUN cp -aL /usr/lib64/libxslt.so.1 ${INSTALL_DIR}/lib64/
-RUN cp -aL /usr/lib64/libexslt.so.0 ${INSTALL_DIR}/lib64/
-RUN cp -aL /usr/lib64/libpng16.so.16 ${INSTALL_DIR}/lib64/
-RUN cp -aL /usr/lib64/libjpeg.so.62 ${INSTALL_DIR}/lib64/
-RUN cp -aL /usr/lib64/libcrypt.so.2 ${INSTALL_DIR}/lib64/
-RUN cp -aL /opt/vapor/lib/libsqlite3.so.0 ${INSTALL_DIR}/lib64/
+RUN cp -aL /usr/lib64/libtinfo.so.6 /opt/lib/
+RUN cp -aL /usr/lib64/libonig.so.5 /opt/lib/
+RUN cp -aL /usr/lib64/libsodium.so.26 /opt/lib/
+RUN cp -aL /usr/lib64/libzip.so.5 /opt/lib/
+RUN cp -aL /usr/lib64/libpq.so.5 /opt/lib/
+RUN cp -aL /usr/lib64/libldap_r-2.4.so.2 /opt/lib/
+RUN cp -aL /usr/lib64/liblber-2.4.so.2 /opt/lib/
+RUN cp -aL /usr/lib64/libsasl2.so.3 /opt/lib/
+RUN cp -aL /usr/lib64/libicuio.so.67 /opt/lib/
+RUN cp -aL /usr/lib64/libicui18n.so.67 /opt/lib/
+RUN cp -aL /usr/lib64/libicuuc.so.67 /opt/lib/
+RUN cp -aL /usr/lib64/libicudata.so.67 /opt/lib/
+RUN cp -aL /usr/lib64/libxslt.so.1 /opt/lib/
+RUN cp -aL /usr/lib64/libexslt.so.0 /opt/lib/
+RUN cp -aL /usr/lib64/libpng16.so.16 /opt/lib/
+RUN cp -aL /usr/lib64/libjpeg.so.62 /opt/lib/
+RUN cp -aL /usr/lib64/libcrypt.so.2 /opt/lib/
+RUN cp -aL /opt/vapor/lib/libsqlite3.so.0 /opt/lib/
 
 # ---------- Stripe unneded symbols ----------
 
@@ -161,7 +161,6 @@ RUN find ${INSTALL_DIR} -type f -executable -exec sh -c "file -i '{}' | grep -q 
 
 RUN cp ${INSTALL_DIR}/bin/php /opt/bin/php \
     && cp ${INSTALL_DIR}/sbin/php-fpm /opt/bin/php-fpm \
-    && cp ${INSTALL_DIR}/lib64/* /opt/lib || true \
     && cp $(php -r 'echo ini_get("extension_dir");')/* /opt/bin/ \
     && cp /etc/ssl/cert.pem /opt/lib/curl/cert.pem
 
