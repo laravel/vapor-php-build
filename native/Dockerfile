@@ -154,17 +154,19 @@ RUN cp -aL \
   /opt/vapor/lib/libsqlite3.so.0 \
   /opt/lib/
 
-# ---------- Stripe unneded symbols ----------
-
-RUN find ${INSTALL_DIR} -type f -name "*.so*" -o -name "*.a"  -exec strip --strip-unneeded {} \;
-RUN find ${INSTALL_DIR} -type f -executable -exec sh -c "file -i '{}' | grep -q 'x-executable; charset=binary'" \; -print|xargs strip --strip-all
-
-# ---------- Copy everything ----------
+# ---------- Copy PHP binaries ----------
 
 RUN cp ${INSTALL_DIR}/bin/php /opt/bin/php \
     && cp ${INSTALL_DIR}/sbin/php-fpm /opt/bin/php-fpm \
     && cp $(php -r 'echo ini_get("extension_dir");')/* /opt/bin/ \
-    && cp /etc/ssl/cert.pem /opt/lib/curl/cert.pem
+    && cp /etc/ssl/cert.pem /opt/lib/curl/cert.pem \
+
+# ---------- Stripe unneded symbols ----------
+
+RUN find /opt -type f -name "*.so*" -o -name "*.a"  -exec strip --strip-unneeded {} \;
+RUN find /opt -type f -executable -exec sh -c "file -i '{}' | grep -q 'x-executable; charset=binary'" \; -print|xargs strip --strip-all
+
+# ---------- Prepare for export ----------
 
 RUN rm -rf /opt/vapor/ \
     && mkdir -p /opt/vapor/etc/php/conf.d
