@@ -1,7 +1,7 @@
 ARG php
 FROM php:${php}-fpm-alpine
 
-RUN apk --update add build-base autoconf pkgconfig libtool
+RUN apk --update add build-base autoconf pkgconfig libtool oniguruma-dev
 
 # ---------- Install libraries ----------
 
