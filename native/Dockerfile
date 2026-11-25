@@ -159,7 +159,7 @@ RUN cp -aL \
 RUN cp ${INSTALL_DIR}/bin/php /opt/bin/php \
     && cp ${INSTALL_DIR}/sbin/php-fpm /opt/bin/php-fpm \
     && cp $(php -r 'echo ini_get("extension_dir");')/* /opt/bin/ \
-    && cp /etc/ssl/cert.pem /opt/lib/curl/cert.pem \
+    && cp /etc/ssl/cert.pem /opt/lib/curl/cert.pem
 
 # ---------- Stripe unneded symbols ----------
 
