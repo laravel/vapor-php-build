@@ -1,6 +1,8 @@
 ARG php
 FROM php:${php}-fpm-alpine
 
+RUN apk --update add build-base autoconf pkgconfig libtool
+
 # ---------- Install libraries ----------
 
 #RUN apk --update add \
