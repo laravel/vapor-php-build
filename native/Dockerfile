@@ -133,24 +133,26 @@ RUN pie install --no-cache phpredis/phpredis:${VERSION_REDIS}
 
 # ---------- Copy libraries ----------
 
-RUN cp -aL /usr/lib64/libtinfo.so.6 /opt/lib/
-RUN cp -aL /usr/lib64/libonig.so.5 /opt/lib/
-RUN cp -aL /usr/lib64/libsodium.so.26 /opt/lib/
-RUN cp -aL /usr/lib64/libzip.so.5 /opt/lib/
-RUN cp -aL /usr/lib64/libpq.so.5 /opt/lib/
-RUN cp -aL /usr/lib64/libldap_r-2.4.so.2 /opt/lib/
-RUN cp -aL /usr/lib64/liblber-2.4.so.2 /opt/lib/
-RUN cp -aL /usr/lib64/libsasl2.so.3 /opt/lib/
-RUN cp -aL /usr/lib64/libicuio.so.67 /opt/lib/
-RUN cp -aL /usr/lib64/libicui18n.so.67 /opt/lib/
-RUN cp -aL /usr/lib64/libicuuc.so.67 /opt/lib/
-RUN cp -aL /usr/lib64/libicudata.so.67 /opt/lib/
-RUN cp -aL /usr/lib64/libxslt.so.1 /opt/lib/
-RUN cp -aL /usr/lib64/libexslt.so.0 /opt/lib/
-RUN cp -aL /usr/lib64/libpng16.so.16 /opt/lib/
-RUN cp -aL /usr/lib64/libjpeg.so.62 /opt/lib/
-RUN cp -aL /usr/lib64/libcrypt.so.2 /opt/lib/
-RUN cp -aL /opt/vapor/lib/libsqlite3.so.0 /opt/lib/
+RUN cp -aL \
+  /usr/lib64/libtinfo.so.6 \
+  /usr/lib64/libonig.so.5 \
+  /usr/lib64/libsodium.so.26 \
+  /usr/lib64/libzip.so.5 \
+  /usr/lib64/libpq.so.5 \
+  /usr/lib64/libldap_r-2.4.so.2 \
+  /usr/lib64/liblber-2.4.so.2 \
+  /usr/lib64/libsasl2.so.3 \
+  /usr/lib64/libicuio.so.67 \
+  /usr/lib64/libicui18n.so.67 \
+  /usr/lib64/libicuuc.so.67 \
+  /usr/lib64/libicudata.so.67 \
+  /usr/lib64/libxslt.so.1 \
+  /usr/lib64/libexslt.so.0 \
+  /usr/lib64/libpng16.so.16 \
+  /usr/lib64/libjpeg.so.62 \
+  /usr/lib64/libcrypt.so.2 \
+  /opt/vapor/lib/libsqlite3.so.0 \
+  /opt/lib/
 
 # ---------- Stripe unneded symbols ----------
 
