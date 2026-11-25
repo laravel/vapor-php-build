@@ -50,7 +50,7 @@ RUN curl -fsSL -o /usr/local/bin/pie \
     https://github.com/php/pie/releases/latest/download/pie.phar \
     && chmod +x /usr/local/bin/pie
 
-RUN pie install --no-cache phpredis/phpredis:dev-develop
+RUN pie install --no-cache phpredis/phpredis:${redis}
 
 RUN cp "/etc/ssl/cert.pem" /opt/cert.pem
 
