@@ -163,8 +163,8 @@ RUN cp ${INSTALL_DIR}/bin/php /opt/bin/php \
 
 # ---------- Stripe unneded symbols ----------
 
-RUN find /opt -type f -name "*.so*" -o -name "*.a"  -exec strip --strip-unneeded {} \;
-RUN find /opt -type f -executable -exec sh -c "file -i '{}' | grep -q 'x-executable; charset=binary'" \; -print|xargs strip --strip-all
+#RUN find /opt -type f -name "*.so*" -o -name "*.a"  -exec strip --strip-unneeded {} \;
+#RUN find /opt -type f -executable -exec sh -c "file -i '{}' | grep -q 'x-executable; charset=binary'" \; -print|xargs strip --strip-all
 
 # ---------- Prepare for export ----------
 
