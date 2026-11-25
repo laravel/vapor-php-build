@@ -152,7 +152,7 @@ RUN cp -aL /usr/lib64/libjpeg.so.62 ${INSTALL_DIR}/lib64/
 RUN cp -aL /usr/lib64/libcrypt.so.2 ${INSTALL_DIR}/lib64/
 RUN cp -aL /opt/vapor/lib/libsqlite3.so.0 ${INSTALL_DIR}/lib64/
 
-# ---------- Stripe unneded suymbols ----------
+# ---------- Stripe unneded symbols ----------
 
 RUN find ${INSTALL_DIR} -type f -name "*.so*" -o -name "*.a"  -exec strip --strip-unneeded {} \;
 RUN find ${INSTALL_DIR} -type f -executable -exec sh -c "file -i '{}' | grep -q 'x-executable; charset=binary'" \; -print|xargs strip --strip-all
@@ -165,15 +165,11 @@ RUN cp ${INSTALL_DIR}/bin/php /opt/bin/php \
     && cp $(php -r 'echo ini_get("extension_dir");')/* /opt/bin/ \
     && cp /etc/ssl/cert.pem /opt/lib/curl/cert.pem
 
-# ---------- Copy everything ----------
-
-WORKDIR /opt
-
-RUN rm -rf vapor/ \
-    && mkdir -p vapor/etc/php/conf.d
+RUN rm -rf /opt/vapor/ \
+    && mkdir -p /opt/vapor/etc/php/conf.d
 
 ARG ini_file
 
 COPY --chmod=755 /runtime/bootstrap /opt
 COPY --chmod=755 /runtime/bootstrap.php /opt
-COPY /runtime/${ini_file} vapor/etc/php/conf.d/php.ini
+COPY /runtime/${ini_file} /opt/vapor/etc/php/conf.d/php.ini

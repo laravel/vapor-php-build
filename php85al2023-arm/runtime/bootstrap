@@ -1,6 +1,0 @@
-#!/bin/sh
-
-while true
-do
-    /opt/bin/php /opt/bootstrap.php
-done
