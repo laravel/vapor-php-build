@@ -161,11 +161,6 @@ RUN cp ${INSTALL_DIR}/bin/php /opt/bin/php \
     && cp $(php -r 'echo ini_get("extension_dir");')/* /opt/bin/ \
     && cp /etc/ssl/cert.pem /opt/lib/curl/cert.pem
 
-# ---------- Stripe unneded symbols ----------
-
-#RUN find /opt -type f -name "*.so*" -o -name "*.a"  -exec strip --strip-unneeded {} \;
-#RUN find /opt -type f -executable -exec sh -c "file -i '{}' | grep -q 'x-executable; charset=binary'" \; -print|xargs strip --strip-all
-
 # ---------- Prepare for export ----------
 
 RUN rm -rf /opt/vapor/ \
