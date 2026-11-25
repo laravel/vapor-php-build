@@ -100,6 +100,7 @@ done
 
 for region in "${REGIONS_TO_PUBLISH[@]}"; do
   for layer in "${LAYERS_TO_PUBLISH[@]}"; do
+    description="${LAYERS[$layer]}"
     zip_file="./export/${layer}.zip"
 
     version_arn=$(aws lambda publish-layer-version \
