@@ -47,5 +47,5 @@ else
 fi
 
 for img in "${IMAGES_TO_PUBLISH[@]}"; do
-    echo ${img}
+    docker push laravelphp/vapor:${img}
 done
